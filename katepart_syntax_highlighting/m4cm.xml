@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "language.dtd">
 <!-- M4 Circuit Macro 9.1.3 syntax highlightning, see: <ANY CTAN MIRROR SITE>/CTAN/graphics/circuit_macros or get the bleeding edge version directly from: https://ece.uwaterloo.ca/~aplevich/Circuit_macros/ -->
-  <language name="m4 circuit macros" version="9.1.3" section="Sources" kateversion="2.9" extensions="*.cir; *.m4;*.m4cm;*.pic" mimetype="application/x-cirkuit" author="Peter-Jan Randewijk (pjrandewijk@gmail.com)" license="LGPL">
+  <language name="M4 Circuit Macros" version="9.1.3" section="Sources" kateversion="2.9" extensions="*.cir; *.m4;*.m4cm;*.pic" mimetype="application/m4cm" author="Peter-Jan Randewijk (pjrandewijk@gmail.com)" license="LGPL">
   <highlighting>
     <list name="prep">
       <item> &per;PS </item>
