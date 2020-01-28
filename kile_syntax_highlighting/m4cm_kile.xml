@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language name="M4CM" version="1" kateversion="18.12.3" section="Sources" extensions="*.m4cm";*.m4;*.pic />
+<highlighting>
     <list name="builtinfuncs">
 changequote define divert divnum dnl dumpdef errprint eval ifdef ifelse include incr index len maketemp sinclude substr syscmd translit undefine undivert
      </list>
