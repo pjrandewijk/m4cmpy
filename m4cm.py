@@ -7,8 +7,10 @@ import sys
 import subprocess
 import argparse
 
+__version__ = 3.1
+
 #------------------------------------------------------------------------------#
-parser = argparse.ArgumentParser(prog='m4cm',
+parser = argparse.ArgumentParser(prog='M4CM',
                                  description='Instead of "M4CM_FILE", it is also possible to use "*.m4cm" to compile all the ".m4cm" files in the current folder',
                                  epilog='In order to create standalone PDF/JPG/PNG figures for M4 Circuit Macros')
 #------------------------------------------------------------------------------#
@@ -27,7 +29,7 @@ parser.add_argument('-b', '--boundingbox_offset',
                     dest='BB_offset',
                     type=int,           #stores arguments as 'integers' in the list
                     nargs=4,           #use only one arguments or the default value
-                    metavar=('L','T','R','B'),
+                    metavar=('L','B','R','T'),
                     default=(1,1,1,1),
                     help='the BoundingBox Offset: left offset point value, top offset point value, right offset point value, bottom offset point values, the default is: 1 1 1 1, i.e. 1pt in each direction')
 parser.add_argument('-d', '--delete_eps',
@@ -93,11 +95,15 @@ parser.add_argument('-t', '--template',
                     default='default.ltx',
                     help='LaTeX template file to be used [default="default.ltx"]')
 
+parser.add_argument('-v','--version',
+                    action='version',
+                    version='%(prog)s '+str(__version__))                    
+
 parser.add_argument('m4cmFile',
                     nargs='*',
                     metavar='M4CM_FILE',
                     help='M4CM File to be compiled')
-                    
+
 #------------------------------------------------------------------------------#
 args =parser.parse_args()
 
