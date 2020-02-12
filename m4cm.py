@@ -233,6 +233,7 @@ for filename in m4cmFileNameList:
     gs_cmd = '%s -dBATCH -dNOPAUSE -sDEVICE=bbox "%s"' %  (gs_exe, filename+'.ps')
     gs_subprocess=subprocess.Popen(gs_cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,encoding='utf-8')
     gs_out, gs_err = gs_subprocess.communicate() #'gs_err' contains the actual Bounding Box information and not the 'gs_out'
+    if not args.QUIET: print(gs_out)
     BB_match=re.search(r'(%%BoundingBox:)\s+([0-9]*)\s+([0-9]*)\s+([0-9]*)\s+([0-9]*)',gs_err)
     HRBB_match=re.search(r'(%%HiResBoundingBox:)\s+([0-9\.]*)\s+([0-9\.]*)\s+([0-9\.]*)\s+([0-9\.]*)',gs_err)
 	

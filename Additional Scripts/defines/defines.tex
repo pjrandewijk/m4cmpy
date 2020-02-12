@@ -1,0 +1,1920 @@
+%
+\newdimen{\leftwid}\setlength{\leftwid}{2in}
+\newdimen{\libwid}\setlength{\libwid}{0.5in}
+\newdimen\rightwid
+\setlength{\rightwid}{\textwidth}
+\addtolength{\rightwid}{-\leftwid}
+\addtolength{\rightwid}{-\libwid}
+%
+\newbox\Defbox
+
+\newcommand{\macx}[2]{%
+  \phantomsection\pdfbookmark[subsection]{#1}{#2}#1}
+
+\newcommand{\macrodef}[5]{%\begin{samepage}%
+\phantomsection\pdfbookmark[subsection]{#1}{#2}%
+\setbox\Defbox=\hbox{\tt #1#3}%
+  \ifdim\wd\Defbox>\textwidth%
+    \setbox\Defbox=\hbox{\parbox{\textwidth}{\tt #1#3}}\fi
+  \ifdim\wd\Defbox>\leftwid%
+       \box\Defbox\hfill\break\hspace*{\leftwid}%
+  \else\hbox to \leftwid{\box\Defbox\hfill}\fi%
+  \hbox to \libwid{#4\hfill}\parbox[t]{\rightwid}%
+   {\raggedright #5}%
+%   \end{samepage}%
+  \vspace{\parsep}\\}
+
+\newcommand{\seesect}[1]{ (\SR{#1})}
+
+\vspace{\abovedisplayskip}
+\noindent
+\macrodef{above\_}{above_}{}
+  {gen}
+  {string position above relative to current direction}
+\macrodef{abs\_}{abs_}{({\sl number})}
+  {gen}
+  {absolute value function}
+\macrodef{adc}{adc}{({\sl width,height,nIn,nN,nOut,nS})}
+  {cct}
+  {ADC with defined width, height, and number of inputs {\tt In$i$},
+    top terminals {\tt N$i$}, ouputs {\tt Out$i$},
+    and bottom terminals~{\tt S$i$}}
+\macrodef{addtaps}{addtaps}{[{\sl arrowhd}
+  | type={\sl arrowhd};name={\sl Name}],
+    {\sl fraction, length, fraction, length,} $\cdots$)}
+  {cct}
+  {Add taps to the previous two-terminal element.
+   {\sl arrowhd} = blank or one of {\tt . - <- -> <->}.
+   Each fraction determines the position along the element body of the tap.
+   A negative length draws the tap to the right of the current
+   direction; positive length to the left.
+   Tap names are Tap1, Tap2, $\cdots$ by default  or
+   Name1, Name2, $\cdots$ if specified 
+   \seesect{Composite:}}
+\macrodef{along\_}{along_}{({\sl linear object name})}
+  {gen}
+  {short for {\tt between {\sl name}.start and {\sl name}.end}}
+\macrodef{Along\_}{Along_}{({\sl LinearObj,distance,}[R])}
+  {gen}
+  {Position arg2 (default all the way) along a linear object
+   from {\tt .start} to {\tt .end}
+   (from {\tt .end} to {\tt .start} if arg3={\tt R}) }
+\macrodef{amp}{amp}{(\linespec,{\sl size})}
+  {cct}
+  {amplifier\seesect{Twoterminal:}}
+\macrodef{And, Or, Not, Nand, Nor, Xor, Nxor, Buffer}%
+ {And, Or, Not, Nand, Nor, Xor, Nxor, Buffer}{}
+  {log}
+  {Wrappers of {\tt AND\_gate}, $\ldots$ for use in the {\tt Autologix}
+   macro}
+\macrodef{AND\_gate}{AND_gate}{({\sl n},N)}
+  {log}
+  {basic `and' gate, 2 or {\sl n\/} inputs; {\tt N}=negated input.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs
+    \seesect{Logicgates:}}
+\macrodef{AND\_gen}{AND_gen}{($n$,{\sl chars},[{\sl wid},[{\sl ht}]])}
+  {log}
+  {general AND gate: $n$=number of inputs $(0\leq n\leq 16)$;
+           {\sl chars:}
+           B=base and straight sides; A=Arc;
+           [N]NE,[N]SE,[N]I,[N]N,[N]S=inputs or circles;
+           [N]O=output; C=center.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs.}
+\macrodef{AND\_ht}{AND_ht}{}
+  {log}
+  {height of basic `and' and `or' gates in {\tt L\_unit}s}
+\macrodef{AND\_wd}{AND_wd}{}
+  {log}
+  {width of basic `and' and `or' gates in {\tt L\_unit}s}
+\macrodef{antenna}{antenna}{%
+  (at {\sl location}, T, A|L|T|S|D|P|F, U|D|L|R|{\sl degrees})}
+  {cct}
+  {antenna, without stem for nonblank 2nd arg; {\tt A}=aerial,
+    {\tt L}=loop, {\tt T}=triangle, {\tt S}=diamond, {\tt D}=dipole,
+    {\tt P}=phased, {\tt F}=fork;
+    up, down, left, right, or angle from horizontal (default 90) 
+   \seesect{Composite:}}
+\macrodef{arca}{arca}{({\sl absolute chord linespec}, ccw|cw, {\sl radius},
+   {\sl modifiers}) }
+  {gen}
+  {arc with acute angle (obtuse if radius is negative), drawn in a [ ] block}
+\macrodef{arcd}{arcd}{({\sl center},
+  {\sl radius},{\sl start degrees},{\sl end degrees}) }
+  {gen}
+  {Arc definition (see {\tt arcr}), angles in degrees
+    \seesect{Positions:}}
+\macrodef{arcdimension\_}{arcdimension_}{({\sl arcspec},{\sl offset},%
+{\sl label},
+    D|H|W|{\sl blank width},{\sl tic offset},{\sl arrowhead })}
+  {gen}
+  {like {\tt dimension\_}, for drawing arcs for dimensioning diagrams;
+      {\sl arrowhead=}{\tt -> | <-}. Uses the first argument as the attributes
+      of an invisible arc: {\tt arc invis }{\sl arg1}.  {\sl Arg2} is the
+      radial displacement (possibly negative) of the dimension arrows.
+      If {\sl arg3} is {\tt s\_box(\ldots)} or {\sl rs\_box(\ldots)} and
+      {\sl arg4=}{\tt D|H|W} then {\sl arg4} means:
+      {\tt D:} blank width is the diagonal length of {\sl arg3};
+      {\tt H:} blank width is the height of {\sl arg3} + {\tt textoffset*2};
+      {\tt W:} blank width is the width of {\sl arg3} + {\tt textoffset*2};
+      otherwise {\sl arg4} is the absolute blank width}
+\macrodef{arcr}{arcr}{({\sl center},{\sl radius},{\sl start angle},{\sl
+    end angle,modifiers,ht}) }
+  {gen}
+  {Arc definition.  If arg5 contains {\tt <-} or {\tt ->} then a midpoint
+    arrowhead of height equal to arg6 is added. Arg5 can contain modifiers
+    (e.g. outlined "red"), for the arc and arrowhead.  Modifiers following
+    the macro affect the arc only,
+    e.g., {\tt arcr(A,r,0,pi\_/2,->) dotted ->}
+   \seesect{Positions:}}
+\macrodef{arcto}{arcto}{({\sl position 1},{\sl position 2},{\sl
+    radius},[dashed|dotted])}
+  {gen}
+  {line toward position 1 with rounded corner toward position 2}
+\macrodef{arrowline}{arrowline}{(\linespec)}
+  {cct}
+  {line (dotted, dashed permissible) with centred arrowhead
+    \seesect{Twoterminal:}}
+\macrodef{AutoGate}{AutoGate}{}
+  {log}
+  {Draw the tree for a gate as in the {\tt Autologix} macro.  No inputs
+   or external connections are drawn.  The names of the internal gate
+   inputs are stacked in {\tt `AutoInNames'}}
+\macrodef{Autologix}{Autologix}%
+ {({\sl Boolean function sequence},%
+    [N[oconnect]][L[eftinputs]][R][V][M][;offset={\sl value}]}
+  {log}
+  {Draw the Boolean expressions defined in function notation
+   using {\tt And, Or, Not, Buffer, Xor, Nand, Nor, Nxor}
+   and variables, e.g.,
+   {\tt Autologix(And(Or(x1,~x2),Or(~x1,x2)));}.
+   The Boolean functions are separated by semicolons (;). Function
+   outputs are aligned vertically but appending
+   {\tt:}{\sl location attribute} to a function can be used to place it.
+   Each unique variable {\sl var} causes an input point {\tt In}{\sl var} 
+   to be defined.  Preceding the variable by a {\tt \~{}} causes a not gate
+   to be drawn at the input.
+   The inputs are drawn in a row at the upper left by default.
+   An {\tt L} in arg2 draws the inputs in a column at the left;
+   {\tt R} reverses the order of the drawn inputs;
+   {\tt V} scans the expression from right to left
+   when listing inputs;
+   {\tt M} draws the left-right mirror image of the diagram;
+   and {\tt N} draws only the function tree without the input array.
+   The inputs are labelled {\tt In1}, {In2}, \ldots and the function
+   outputs are {\tt Out1}, {Out2}, \dots.
+   Each variable {\sl var} corresponds also to one of the input array
+   points with label {\tt In}{\sl var}.
+   Setting {\tt offset=}{\sl value} displaces the
+   drawn input list in order to disambiguate the input connections when {\tt L}
+   is used}
+\macrodef{b\_}{b_}{}
+  {gen}
+  {blue color value}
+\macrodef{b\_current}{b_current}{({\sl label},{\sl pos},In|Out,Start|End,{\sl
+    frac})}
+  {cct}
+  {labelled branch-current arrow to {\sl frac} between branch end and body
+    \seesect{Branchcurrent:}}
+\macrodef{basename\_}{basename_}{({\sl string sequence, separator})}
+  {gen}
+  {Extract the rightmost name from a sequence of names separated by arg2
+   (default dot ``.'')}
+\macrodef{battery}{battery}{(\linespec,{\sl n},R)}
+  {cct}
+  {n-cell battery: default 1 cell,
+  R=reversed polarity\seesect{Twoterminal:}}
+\macrodef{beginshade}{beginshade}{({\sl gray value})}
+  {gen}
+  {begin gray shading, see {\tt shade}
+   e.g., {\tt beginshade(.5);} {\sl closed line specs}; {\tt endshade}}
+\macrodef{bell}{bell}{( U|D|L|R|{\sl degrees}, {\sl size})}
+  {cct}
+  {bell, {\sl In1} to {\sl In3} defined
+   \seesect{Composite:}}
+\macrodef{below\_}{below_}{}
+  {gen}
+  {string position relative to current direction}
+\macrodef{bi\_tr}{bi_tr}{(\linespec,L|R,P,E)}
+  {cct}
+  {left or right, N- or P-type bipolar transistor, without or with envelope 
+    \seesect{Semiconductors:}}
+\macrodef{bi\_trans}{bi_trans}{(\linespec,L|R,{\sl chars},E)}
+  {cct}
+  { bipolar transistor, core left or right; chars:
+   {\tt BU}=bulk line,
+   {\tt B}=base line and label,
+   {\tt S}=Schottky base hooks,
+   {\tt uEn|dEn}=emitters E0 to En,
+   {\tt uE|dE}=single emitter,
+   {\tt Cn|uCn|dCn}=collectors C0 to Cn; {\tt u} or {\tt d} add an arrow,
+   {\tt C}=single collector; {\tt u} or {\tt d} add an arrow,
+   {\tt G}=gate line and location,
+   {\tt H}=gate line; {\tt L}=L-gate line and location,
+   {\tt [d]D}=named parallel diode,
+   {\tt d}=dotted connection,
+   {\tt [u]T}=thyristor trigger line;
+   arg 4 = E: envelope
+    \seesect{Semiconductors:}}
+\macrodef{binary\_}{binary_}{($n$, [$m$])}
+  {gen}
+  {binary representation of $n,$ left padded to $m$ digits if the second
+   argument is nonblank}
+\macrodef{BOX\_gate}{BOX_gate}{({\sl inputs,output,swid,sht,label})}
+  {log}
+  {output=[{\tt P|N}], inputs=[{\tt P|N}]$\ldots$, sizes swid and sht
+  in {\tt L\_unit}s (default {\tt AND\_wd} = 7)
+    \seesect{Logicgates:}}
+\macrodef{boxcoord}{boxcoord}{({\sl planar obj},{\sl x fraction},{\sl y
+    fraction})}
+  {gen}
+  {internal point in a planar object}
+\macrodef{boxdim}{boxdim}{({\sl name},h|w|d|v,{\sl default})}
+  {gen}
+  {evaluate, e.g.\ {\sl name}{\tt \_w} if defined, else {\sl default\/}
+   if given, else 0 {\tt v} gives sum of {\tt d} and {\tt h} values
+     \seesect{Interaction:}}
+\macrodef{bp\_\_}{bp__}{}
+  {gen}
+  {big-point-size factor, in scaled inches, ({\tt *scale/72})}
+\macrodef{bswitch}{bswitch}{(\linespec, [L|R],chars)}
+  {cct}
+  {pushbutton switch R=right orientation (default L=left);
+     chars: O= normally open, C=normally closed }
+\macrodef{BUF\_ht}{BUF_ht}{}
+  {log}
+  {basic buffer gate height in {\tt L\_unit}s}
+\macrodef{BUF\_wd}{BUF_wd}{}
+  {log}
+  {basic buffer gate width in {\tt L\_unit}s}
+\macrodef{BUFFER\_gate}{BUFFER_gate}{(\linespec, [N|B],
+  {\sl wid, ht,} [N|P]\char42, [N|P]\char42, [N|P]\char42)}
+  {log}
+  {basic buffer, dfault 1 input or as a 2-terminal element,
+    arg2: {\tt N}=negated input, {\tt B}=box gate; arg 5:
+    normal ({\tt P}) or negated {\tt N}) inputs labeled In1 
+    \seesect{Logicgates:}}
+\macrodef{BUFFER\_gen}{BUFFER_gen}{({\sl chars,wd,ht},[N|P]*,[N|P]*,[N|P]*)}
+  {log}
+  {general buffer, {\sl chars:} {\tt T}=triangle,
+            {\tt [N]O}=output location {\tt Out}
+            ({\tt NO} draws circle {\tt N\_Out});
+            {\tt [N]I, [N]N, [N]S, [N]NE, [N]SE}
+            input locations; {\tt C}=centre location.
+            Args 4-6 allow alternative
+            definitions of respective {\tt In, NE,}
+            and {\tt SE} argument sequences }
+\macrodef{buzzer}{buzzer}{( U|D|L|R|{\sl degrees, size,}[C])}
+  {cct}
+  {buzzer, {\sl In1} to {\sl In3} defined, C=curved
+   \seesect{Composite:}}
+\macrodef{c\_fet}{c_fet}{(\linespec,L|R,P)}
+  {cct}
+  {left or right, plain or negated pin simplified MOSFET}
+\macrodef{capacitor}{capacitor}{(\linespec,{\sl char}[+[L]],R,
+    {\sl height}, {\sl wid})}
+  {cct}
+  {capacitor, {\sl char}: F or none=flat plate, C=curved-plate,
+    E=polarized boxed plates,
+    K=filled boxed plates,
+    M=unfilled boxes,
+    M=one rectangular plate,
+    P=alternate polarized; + adds a polarity sign;
+    +L polarity sign to the left of drawing direction;
+    arg3:  R=reversed polarity,
+    arg4 = height (defaults F: {\tt dimen\_}$/3$,
+      C,P: {\tt dimen\_}$/4$, E,K: {\tt dimen\_}$/5$)
+    arg5 = wid (defaults F: {\sl height}*0.3,
+      C,P: {\sl height}*0.4, E,K: {\sl height}) \seesect{Twoterminal:}}
+\macrodef{cbreaker}{cbreaker}{(\linespec,L|R,D|T|TS)}
+  {cct}
+  {circuit breaker to left or right, {\tt D}=with dots; {\tt T}=thermal;
+   {\tt TS}=squared thermal\seesect{Twoterminal:}}
+\macrodef{ccoax}{ccoax}{(at {\sl location}, M|F, {\sl diameter})}
+  {cct}
+  {coax connector, {\tt M}=male, {\tt F}=female
+    \seesect{Composite:}}
+\macrodef{cct\_init}{cct_init}{}
+  {cct}
+  {initialize circuit-diagram environment (reads {\tt libcct.m4})}
+\macrodef{centerline\_}{centerline_}{({\sl linespec, thickness{\tt|}color,
+   minimum long dash len, short dash len, gap len}}
+  {gen}
+  {Technical drawing centerline}
+\macrodef{Cintersect}{Cintersect}{({\sl Pos1, Pos2, rad1, rad2,} [R])}
+  {gen}
+  {Upper (lower if arg5={\tt R}) intersection of circles at
+    {\sl Pos1} and {\sl Pos2}, radius {\sl rad1} and {\sl rad2}}
+\macrodef{clabel}{clabel}{({\sl label},{\sl label},{\sl label})}
+  {cct}
+  {centre triple label \seesect{Labels:}}
+\macrodef{cm\_\_}{cm__}{}
+  {gen}
+  {absolute centiimetres}
+\macrodef{consource}{consource}{(\linespec,V|I|v|i,R)}
+  {cct}
+  {voltage or current controlled source with alternate forms;
+   {\tt R}=reversed polarity\seesect{Twoterminal:}}
+\macrodef{contact}{contact}{({\sl chars})}
+  {cct}
+  {single-pole contact: {\tt P}= three position, {\tt O}= normally open,
+   {\tt C}= normally closed, {\tt I}= circle contacts, {\tt R}= right
+   orientation
+   \seesect{Composite:}}
+\macrodef{contacts}{contacts}{({\sl count, chars})}
+  {cct}
+  {multiple ganged single-pole contacts:
+  {\tt P}= three position, {\tt O}= normally open,
+   {\tt C}= normally closed, {\tt I}= circle contacts, {\tt R}= right
+   orientation, {\tt D}= dashed line over contact armatures
+   \seesect{Composite:}}
+\macrodef{contline}{contline}{({\sl line})}
+  {gen}
+  {evaluates to {\tt continue}
+    if processor is {\bf dpic}, otherwise to first arg (default {\tt line})}
+\macrodef{corner}{corner}{({\sl line thickness,attributes,turn radians})}
+  {gen}
+  { Mitre (default filled square) drawn at end of last line or at a
+    given position.
+    arg1 default: current line thickness;
+    arg2: e.g. {\tt outlined} {\sl string}; if arg2 starts with
+    {\tt at} {\sl position} then a manhattan (right-left-up-down) corner
+    is drawn;
+    arg3= radians (turn angle, +ve is ccw, default $\pi/2$).
+    The corner is enclosed in braces
+    in order to leave {\tt Here} unchanged unless arg2 begins with {\tt at}
+    \seesect{Corners:}}
+\macrodef{Cos}{Cos}{({\sl integer})}
+  {gen}
+  {cosine function, {\sl integer\/} degrees}
+\macrodef{cosd}{cosd}{({\sl arg})}
+  {gen}
+  {cosine of an expression in degrees}
+\macrodef{Cosine}{Cosine}{( {\sl amplitude}, {\sl freq}, {\sl time},
+    {\sl phase} )}
+  {gen}
+  {function $a\times\cos(\omega t + \phi)$ }
+\macrodef{cross}{cross}{(at {\sl location})}
+  {gen}
+  {plots a small cross}
+\macrodef{cross3D}{cross3D}{({\sl x1,y1,z1,x2,y2,z2})}
+  {3D}
+  {cross product of two triples}
+\macrodef{crossover}{crossover}{(\linespec, L|R, Line1, ...)}
+  {cct}
+  {line jumping left or right over named lines\seesect{Semiconductors:}}
+\macrodef{crosswd\_}{crosswd_}{}
+  {gen}
+  {cross dimension}
+\macrodef{csdim\_}{csdim_}{}
+  {cct}
+  {controlled-source width}
+\macrodef{d\_fet}{d_fet}{(\linespec,L|R,P,S,E|S)}
+  {cct}
+  {left or right, N or P depletion MOSFET, normal or simplified,
+    without or with envelope or thick channel
+    \seesect{Semiconductors:}}
+\macrodef{dabove}{dabove}{(at {\sl location})}
+  {darrow}
+  {above (displaced dlinewid/2)}
+\macrodef{dac}{dac}{({\sl width,height,nIn,nN,nOut,nS})}
+  {cct}
+  {DAC with defined width, height, and number of inputs {\tt In$i$},
+    top terminals {\tt N$i$}, ouputs {\tt Out$i$},
+    and bottom terminals~{\tt S$i$} \seesect{Logicgates:}}
+\macrodef{darc}{darc}{({\sl center position},
+  {\sl radius}, {\sl start radians}, {\sl end radians}, {\sl dline thickness},
+  {\sl arrowhead wid}, {\sl arrowhead ht},
+  {\sl terminals})}
+  {darrow}
+  {See also {\tt Darc}.
+   CCW arc in {\tt dline} style, with closed ends or (dpic only) arrowheads.
+  Permissible {\sl terminals}:
+  {\sl x}{\tt -},
+  {\tt -}{\sl x}, {\sl x}{\tt -}{\sl x}, {\tt ->}, {\sl x}{\tt ->},
+  {\tt <-}, {\tt <-}{\sl x}, {\tt <->}
+  where {\sl x} means {\tt |} or (half-thickness line) {\tt !}.}
+\macrodef{Darc}{Darc}{({\sl center position},
+  {\sl radius}, {\sl start radians}, {\sl end radians},
+  {\sl parameters})}
+  {darrow}
+  {Wrapper for {\tt darc}.
+   CCW arc in {\tt dline} style, with closed ends or (dpic only) arrowheads.
+  Semicolon-separated {\sl parameters}:
+  {\tt thick=}{\sl value}, {\tt wid=}{\sl value}, {\tt ends=}
+  {\sl x}{\tt -},
+  {\tt -}{\sl x}, {\sl x}{\tt -}{\sl x}, {\tt ->}, {\sl x}{\tt ->},
+  {\tt <-}, {\tt <-}{\sl x}, {\tt <->}
+  where {\sl x} means {\tt |} or (half-thickness line) {\tt !}.}
+\macrodef{Darlington}{Darlington}{(L|R,{\sl chars})}
+  {cct}
+  {Composite Darlington pair Q1 and Q2 with internal locations E, B, C;
+   Characters in {\sl arg2:}
+   E= envelope,
+   P= P-type,
+   B1= internal base lead,
+   D= damper diode,
+   R1= Q1 bias resistor; E1= ebox,
+   R2= Q2 bias resistor; E1= ebox,
+   Z= zener bias diode 
+    \seesect{Semiconductors:}}
+\macrodef{darrow\_init}{darrow_init}{}
+  {darrow}
+  {initialize darrow drawing parameters (reads {\tt darrow.m4})}
+\macrodef{Darrow}{Darrow}{(\linespec, {\sl parameters})}
+  {darrow}
+  {Wrapper for {\tt darrow}.
+  Semicolon-separated {\sl parameters}:
+    {\tt S}, {\tt E} truncate at start or end by dline thickness/2;
+    {\tt thick=}{\sl val}   (total thicknes, ie width);
+    {\tt wid=}{\sl val}     (arrowhead width);
+    {\tt ht=}{\sl val}      (arrowhead height);
+    {\tt ends=}
+      {\sl x}{\tt -}{\sl x} or
+      {\tt -}{\sl x} or
+      {\sl x}{\tt -} where {\sl x} is {\tt !} (half-width line)
+       or {\tt |} (full-width line).}
+\macrodef{darrow}{darrow}{(\linespec,
+  t,t,{\sl width},{\sl arrowhd wd},{\sl arrowhd ht},{\sl parameters})}
+  {darrow}
+  {See also {\tt Darrow}.
+   double arrow, truncated at beginning or end, specified sizes,
+    with arrowhead or closed stem.
+    {\sl parameters=}
+    {\tt {\sl x}-} or {\tt ->} or {\tt {\sl x}->} or {\tt <-} or {\tt <-{\sl x}}
+    or {\tt <->} where {\sl x} is {\tt |} or {\tt !}.
+    The {\tt !-} or {\tt -!} parameters close
+    the stem with half-thickness lines to simplify butting to other objects. }
+\macrodef{dashline}{dashline}{(\linespec,{\sl thickness}|{\sl color}|<->,
+                                  {\sl dash len, gap len},G)}
+  {gen}
+  {dashed line with dash at end ({\tt G} ends with gap)}
+\macrodef{dbelow}{dbelow}{(at {\sl location})}
+  {darrow}
+  {below (displaced dlinewid/2)}
+\macrodef{dcosine3D}{dcosine3D}{({\sl i,x,y,z})}
+  {3D}
+  {extract i-th entry of triple x,y,z}
+\macrodef{delay\_rad\_}{delay_rad_}{}
+  {cct}
+  {delay radius}
+\macrodef{delay}{delay}{(\linespec,{\sl size})}
+  {cct}
+  {delay element\seesect{Twoterminal:}}
+\macrodef{deleminit\_}{deleminit_}{}
+  {darrow}
+  {sets drawing direction for dlines}
+\macrodef{Demux}{Demux}{({\sl n},{\sl label},
+  {\tt [L][B|H|X][N[{\sl n}]|S[{\sl n}]][[N]OE],
+   {\sl wid},{\sl ht}})}
+  {log}
+  {binary multiplexer, $n$ inputs,
+    {\tt L} reverses input pin numbers,
+    {\tt B} displays binary pin numbers,
+    {\tt H} displays hexadecimal pin numbers,
+    {\tt X} do not print pin numbers,
+    {\tt N[{\sl n}]} puts Sel or Sel$0$ .. Sel$n$ at the top
+    (i.e., to the left of the drawing direction),
+    {\tt S[{\sl n}]} puts the Sel inputs at the bottom (default)
+    {\tt OE} ({\tt N=}negated) {\tt OE} pin
+    \seesect{Logicgates:}}
+\macrodef{dend}{dend}{(at {\sl location})}
+  {darrow}
+  {close (or start) double line}
+\macrodef{dfillcolor}{dfillcolor}{}
+  {darrow}
+  {dline fill color (default white)}
+\macrodef{diff\_}{diff_}{({\sl a},{\sl b})}
+  {gen}
+  {difference function}
+\macrodef{diff3D}{diff3D}{({\sl x1,y1,z1,x2,y2,z2})}
+  {3D}
+  {difference of two triples}
+\macrodef{dimen\_}{dimen_}{}
+  {cct}
+  {size parameter for circuit elements \seesect{Circuitscaling:}}
+\macrodef{dimension\_}{dimension_}{(\linespec,{\sl offset},{\sl label},
+    D|H|W|{\sl blank width},{\sl tic offset},{\sl arrowhead })}
+  {gen}
+  {macro for dimensioning diagrams;
+      {\sl arrowhead=}{\tt -> | <-}}
+\macrodef{diode}{diode}{(\linespec,%
+B|CR|D|G|L|LE[R]|P[R]|S|Sh|T|V|v|w|Z|chars,%
+[R][E])}
+  {cct}
+  {diode:
+   {\tt B}=bi-directional,
+   {\tt CR}=current regulator,
+   {\tt D}=diac,
+   {\tt G}=Gunn,
+   {\tt L}=open form with centre line,
+   {\tt LE[R]}=LED [right],
+   {\tt P[R]}=photodiode [right],
+   {\tt S}=Schottky,
+   {\tt Sh}=Shockley,
+   {\tt T}=tunnel,
+   {\tt V}=varicap,
+   {\tt v}=varicap (curved plate),
+   {\tt w}=varicap (reversed polarity),
+   {\tt Z}=zener;
+   appending {\tt K} to arg 2 draws open arrowheads;
+   arg 3: {\tt R}=reversed polarity, {\tt E}=enclosure \seesect{Twoterminal:}}
+\macrodef{dir\_}{dir_}{}
+  {darrow}
+  {used for temporary storage of direction by darrow macros}
+\macrodef{distance}{distance_}{({\sl Position 1}, {\sl Position2})}
+  {gen}
+  {distance between named positions}
+\macrodef{distance}{distance}{({\sl position}, {\sl position})}
+  {gen}
+  {distance between positions}
+\macrodef{dlabel}{dlabel}{({\sl long},{\sl lat},{\sl label},{\sl
+     label},{\sl label},{\sl chars})}
+  {cct}
+  {general triple label; {\sl chars:}
+    X displacement is from the centre of the last
+      line rather than the centre of the last {\tt [ ]};
+    L,R,A,B align labels ljust, rjust, above,
+      or below (absolute) respectively  \seesect{Labels:}}
+\macrodef{dleft}{dleft}{}
+  {darrow}
+  {double line left turn}
+\macrodef{Dline}{Dline}{(\linespec, {\sl parameters})}
+  {darrow}
+  {Wrapper for {\tt dline}.
+  Semicolon-separated {\sl parameters}:
+    {\tt S}, {\tt E} truncate at start or end by dline thickness/2;
+    {\tt thick=}{\sl val}   (total thicknes, ie width);
+    {\tt ends=}
+      {\sl x}{\tt -}{\sl x} or
+      {\tt -}{\sl x} or
+      {\sl x}{\tt -} where {\sl x} is {\tt !} (half-width line)
+       or {\tt |} (full-width line).}
+\macrodef{dline}{dline}{(\linespec,t,t,{\sl width},{\sl parameters})}
+  {darrow}
+  {See also {\tt Dline}.
+   Double line, truncated by half width at either end, closed
+    at either or both ends.
+   {\sl parameters=}
+      {\sl x}{\tt -}{\sl x} or
+      {\tt -}{\sl x} or
+      {\sl x}{\tt -} where {\sl x} is {\tt !} (half-width line)
+       or {\tt |} (full-width line).}
+\macrodef{dlinewid}{dlinewid}{}
+  {darrow}
+  {width of double lines}
+\macrodef{dljust}{dljust}{(at {\sl location})}
+  {darrow}
+  {ljust (displaced dlinewid/2)}
+\macrodef{dn\_}{dnx}{}
+  {gen}
+  {down with respect to current direction}
+\macrodef{dna\_}{dna_}{}
+  {cct}
+  {internal character sequence that specifies which subcomponents are drawn}
+%\macrodef{dnm\_}{dnm_}{}
+%  {cct}
+%  {similar to dna\_}
+\macrodef{dot}{dot}{(at {\sl location},{\sl radius},{\sl fill})}
+  {gen}
+  {filled circle (third arg= gray value: 0=black, 1=white)}
+\macrodef{dot3D}{dot3D}{({\sl x1,y1,z1,x2,y2,z2})}
+  {3D}
+  {dot product of two triples}
+\macrodef{dotrad\_}{dotrad_}{}
+  {gen}
+  {dot radius}
+\macrodef{down\_}{down_}{}
+  {gen}
+  {sets current direction to down \seesect{Placing:}}
+\macrodef{dright}{dright}{}
+  {darrow}
+  {double arrow right turn}
+\macrodef{drjust}{drjust}{(at {\sl location})}
+  {darrow}
+  {rjust (displaced dlinewid/2)}
+\macrodef{dswitch}{dswitch}{(\linespec,L|R,W[ud]B[K]{\sl chars})}
+  {cct}
+  {SPST switch left or right, W=baseline, B=contact blade,
+    dB=contact blade to the right of drawing direction,
+         K=vertical closing contact line,
+         C = external operating mechanism,
+         D = circle at contact and hinge,
+             (dD = hinge only, uD = contact only)
+         E = emergency button,
+         EL = early close
+            (or late open),
+         LE = late close (or early open),
+         F = fused,
+         H = time delay closing,
+         uH = time delay opening,
+         HH = time delay
+             opening and closing,
+         K = vertical closing contact,
+         L = limit,
+         M = maintained (latched),
+         MM = momentary contact on make,
+         MR = momentary contact on release,
+         MMR = momentary contact
+            on make and release,
+         O = hand operation button,
+         P = pushbutton,
+         T = thermal control linkage,
+         Y = pull switch,
+         Z = turn switch
+   \seesect{Twoterminal:}}
+\macrodef{dtee}{dtee}{([L|R])}
+  {darrow}
+  {double arrow tee junction with tail to left,
+   right, or (default) back along current direction }
+\macrodef{dtor\_}{dtor_}{}
+  {gen}
+  {degrees to radians conversion constant}
+\macrodef{dturn}{dturn}{({\sl degrees ccw})}
+  {darrow}
+  {turn dline arg1 degrees left (ccw)}
+\macrodef{E\_\_}{E__}{}
+  {gen}
+  {the constant $e$}
+\macrodef{e\_}{e_}{}
+  {gen}
+  {.e relative to current direction}
+\macrodef{e\_fet}{e_fet}{(\linespec,L|R,P,S,E|S)}
+  {cct}
+  {left or right, N or P enhancement MOSFET, normal
+   or simplified, without or with envelope or thick channel 
+    \seesect{Semiconductors:}}
+\macrodef{earphone}{earphone}{( U|D|L|R|{\sl degrees, size})}
+  {cct}
+  {earphone, {\sl In1} to {\sl In3} defined
+   \seesect{Composite:}}
+\macrodef{ebox}{ebox}{(\linespec,{\sl length},{\sl ht},{\sl fill value})}
+  {cct}
+  { two-terminal box element with adjustable dimensions and fill
+   value 0 (black) to 1 (white). {\sl length} and {\sl ht} are relative
+   to the direction of \linespec\seesect{Twoterminal:}}
+\macrodef{elchop}{elchop}{({\sl Name1,Name2})}
+  {gen}
+  {{\tt chop} for ellipses: evaluates to {\tt chop} $r$ where $r$ is
+    the distance from the centre of ellipse Name1 to the intersection of
+    the ellipse with a line to location Name2;
+    e.g., {\tt line from A to E elchop(E,A)}}
+\macrodef{eleminit\_}{eleminit_}{(\linespec)}
+  {cct}
+  {internal line initialization}
+\macrodef{elen\_}{elen_}{}
+  {cct}
+  {default element length}
+\macrodef{em\_arrows}{em_arrows}{([N|I|E][D],{\sl angle,length})}
+  {cct}
+  {radiation arrows, N=nonionizing, I=ionizing, E=simple;
+     D=dot\seesect{Twoterminal:}}
+\macrodef{endshade}{endshade}{}
+  {gen}
+  {end gray shading, see {\tt beginshade}}
+\macrodef{Equidist3}{Equidist3}{({\sl Pos1, Pos2, Pos3, Result})}
+  {gen}
+  {Calculates location named {\sl Result} equidistant from the first three
+   positions, i.e.\ the centre of the circle passing through the three
+   positions}
+\macrodef{expe}{expe}{}
+  {gen}
+  {exponential, base $e$}
+\macrodef{f\_box}{f_box}{({\sl boxspecs},{\sl text},{\sl expr1},$\cdots$)}
+  {gen}
+  {like {\tt s\_box} but the text is overlaid on a box of identical size.
+   If there is only one argument then the default box
+   is invisible and filed white
+    \seesect{Interaction:}}
+\macrodef{Fector}{Fector}{({\sl x1,y1,z1,x2,y2,z2})}
+  {3D}
+  {vector projected on current view plane with top face
+   of 3-dimensonal arrowhead normal to x2,y2,z2 }
+\macrodef{FF\_ht}{FF_ht}{}
+  {cct}
+  {flipflop height parameter in {\tt L\_unit}s}
+\macrodef{FF\_wid}{FF_wid}{}
+  {cct}
+  {flipflop width parameter in {\tt L\_unit}s}
+\macrodef{fill\_}{fill_}{({\sl number})}
+  {gen}
+  {fill macro, 0=black, 1=white\seesect{Semiconductors:}}
+\macrodef{fitcurve}{fitcurve}{(V,n,[e.g. dotted],m (default 0))}
+  {gen}
+  {Draw a spline through positions V[m], $ldots$ V[n]: Works only with dpic.}
+\macrodef{FlipFlop}{FlipFlop}{(D|T|RS|JK,{\sl label},{\sl boxspec},%
+ {\sl pinlength})}
+  {log}
+  {flip-flops,
+  {\sl boxspec}=e.g.\ ht x wid y \seesect{Logicgates:}}
+\macrodef{FlipFlop6}{FlipFlop6}{({\sl label},{\sl spec},{\sl boxspec})}
+  {log}
+  {{\em This macro (6-input flip-flops)
+    has been superseded by {\tt FlipFlopX} and may be deleted
+    in future}.
+    {\sl spec}={\tt [[n]NQ][[n]Q][[n]CK][[n]PR][lb]}
+    {\tt [[n]CLR][[n]S][[n].|D|T|R]} to include and negate pins,
+    {\tt lb} to print labels }
+\macrodef{FlipFlopJK}{FlipFlopJK}{({\sl label}, {\sl spec},{\sl boxspec})}
+  {log}
+  {{\em This macro (JK flip-flop)
+    has been superseded by {\tt FlipFlopX} and may be deleted
+    in future}.
+   Similar to {\tt FlipFlop6}.}
+\macrodef{FlipFlopX}{FlipFlopX}{({\sl boxspec, label, leftpins, toppins,
+   rightpins, bottompins, pinlength})}
+  {log}
+  {General flipflop.
+   Arg 1 modifies the box (labelled Chip) default specification.
+   Each of args 3 to 6 is null or a string of {\sl pinspecs}
+   separated by semicolons ({\tt;}).  A {\sl Pinspec} is either empty
+   or of the form
+   {\tt[}{\sl pinopts}{\tt]:[}{\sl label}{\tt[:}{\sl Picname}{\tt]]}.
+   The first colon draws the pin.
+   Pins are placed top to bottom or left to right along the box edges with
+   null {\sl pinspecs} counted for placement. Pins are named by side and number
+   by default; eg {\tt W1, W2, ..., N1, N2, ..., E1, ..., S1, ...} ; however,
+   if {\tt:}{\sl Picname} is present in a {\sl pinspec} then {\sl Picname}
+   replaces the default name.
+   A {\sl pinspec} label is text placed at the pin base. Semicolons are
+   not allowed in labels; use, e.g., {\tt \char92{}char59\char123\char125}
+   instead.
+   To put a bar over a label, use {\tt lg\_bartxt(}{\sl label}{\tt)}.
+   The {\sl pinopts} are {\tt[N|L|M][E]};
+ {\tt N}=pin with not circle;
+ {\tt L}=active low out; {\tt M}=active low in;
+ {\tt E}=edge trigger \seesect{Logicgates:}. Optional arg 7 is the length
+ of pins}
+\macrodef{for\_}{for_}{({\sl start},{\sl end},{\sl increment},`{\sl actions}')}
+  {gen}
+  {integer for loop with index variable {\tt m4x} \seesect{Looping:}}
+\macrodef{FTcap}{FTcap}{({\sl chars})}
+  {cct}
+  {Feed-through capacitor; example of a composite element derived from
+   a two-terminal element.  Defined points: {\sl .Start, .End, .C .T1 .T2 T}
+   Arg 1: (default) {\tt A}= type A, {\tt B}= type B, {\tt C}= type C 
+   \seesect{Composite:}}
+\macrodef{fuse}{fuse}{({\sl linespec, type, wid, ht})}
+  {cct}
+  {fuse symbol, type$=$
+  {\tt  A|B|C|D|S|HB|HC} or {\tt dA=D}\seesect{Twoterminal:}}
+\macrodef{g\_}{g_}{}
+  {gen}
+  {green color value}
+\macrodef{G\_hht}{G_hht}{}
+  {log}
+  {gate half-height in {\tt L\_unit}s}
+\macrodef{gap}{gap}{(\linespec,{\sl fill},A)}
+  {cct}
+  {gap with (filled) dots, A=chopped arrow between dots\seesect{Twoterminal:}}
+\macrodef{gen\_init}{gen_init}{}
+  {gen}
+  {initialize environment for general diagrams
+    (customizable, reads {\tt libgen.m4})}
+\macrodef{glabel\_}{glabel_}{}
+  {cct}
+  {internal general labeller}
+%\macrodef{gpar\_}{gpar_}{({\sl element},{\sl element},{\sl separation})}
+%  {cct}
+%  {two same-direction elements in parallel}
+\macrodef{gpolyline\_}{gpolyline_}{({\sl fraction},{\sl location}, ...)}
+  {gen}
+  {internal to {\tt gshade}}
+\macrodef{graystring}{graystring}{({\sl gray value})}
+  {gen}
+  {evaluates to a string compatible with the postprocessor in use
+   to go with {\tt colored}, {\tt shaded}, or {\tt outlined} attributes.
+   (PSTricks, metapost, pgf-tikz, pdf, postscript, svg).
+   The argument is a fraction in the range $[0,1]$; see {\tt rgbstring}}
+\macrodef{grid\_}{grid_}{({\sl x},{\sl y})}
+  {log}
+  {absolute grid location}
+\macrodef{ground}{ground}{(at {\sl location}, T, N|F|S|L|P|E, U|D|L|R|{\sl
+    degrees})}
+  {cct}
+  { ground, without stem for nonblank 2nd arg;
+    {\tt N}=normal, {\tt F}=frame, {\tt S}=signal, {\tt L}=low-noise,
+    {\tt P}=protective, {\tt E}=European; up, down, left, right, or angle
+    from horizontal (default -90) 
+   \seesect{Composite:}}
+\macrodef{gshade}{gshade}{({\sl gray value},A,B,...,Z,A,B)}
+  {gen}
+  {(Note last two arguments).  Shade a polygon with named
+    vertices, attempting to avoid sharp corners}
+\macrodef{gyrator}{gyrator}{({\sl box specs,space ratio,pin lgth,}[N][V])}
+  {cct}
+  {Gyrator two-port wrapper for {\tt nport}, {\tt N} omits pin dots; {\tt V}
+   gives a vertical orientation
+   \seesect{Composite:}}
+\macrodef{H\_ht}{H_ht}{}
+  {log}
+  {hysteresis symbol dimension in {\tt L\_unit}s}
+\macrodef{Header}{Header}{(1|2,{\sl rows,wid,ht,type})}
+  {log}
+  {Header block with 1 or 2 columns and square Pin 1 
+    \seesect{Composite:}}
+\macrodef{HeaderPin}{HeaderPin}{({\sl location, type, Picname},%
+n|e|s|w,{\sl length})}
+  {log}
+  {General pin for {\tt Header} macro; arg 4 specifies pin direction
+   with respect to the current drawing direction)}
+\macrodef{hatchbox}{hatchbox}{({\sl boxspec,hashsep,hatchspec})}
+  {gen}
+  {Manhattan box with 45 degree hatching, e.g.,
+   {\tt hatchbox(outlined "blue",,dashed outlined "green" thick 0.4)}}
+\macrodef{heater}{heater}{({\sl linespec, ndivisions, wid, ht})}
+  {cct}
+  {heater element\seesect{Twoterminal:}}
+\macrodef{hex\_digit}{hex_digit}{($n$)}
+  {gen}
+  {hexadecimal digit for $0 \leq n < 16$}
+\macrodef{hexadecimal\_}{hexadecimal_}{($n$, [$m$])}
+  {gen}
+  {hexadecimal representation of $n,$ left padded to $m$ digits if the second
+   argument is nonblank}
+\macrodef{hlth}{hlth}{}
+  {gen}
+  {current line half thickness in drawing units}
+\macrodef{hoprad\_}{hoprad_}{}
+  {cct}
+  {hop radius in crossover macro}
+\macrodef{ht\_}{ht_}{}
+  {gen}
+  {height relative to current direction}
+\macrodef{ifdpic}{ifdpic}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if dpic has been specified as pic processor}
+\macrodef{ifgpic}{ifgpic}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if gpic has been specified as pic processor}
+\macrodef{ifinstr}{ifinstr}{({\sl string},{\sl string},{\sl if true},{\sl
+    if false})}
+  {gen}
+  {test if the second argument is a substring of the first; also
+  {\tt ifinstr({\sl string},{\sl string},{\sl if true},{\sl
+  string},{\sl string},{\sl if true}, $\ldots$ {\sl if false})}
+    }
+\macrodef{ifmfpic}{ifmfpic}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if mfpic has been specified as pic post-processor}
+\macrodef{ifmpost}{ifmpost}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if MetaPost has been specified as pic post-processor}
+\macrodef{ifpgf}{ifpgf}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if \TPGF~has been specified as pic post-processor}
+\macrodef{ifpostscript}{ifpostscript}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if Postscript ({\tt dpic -r}) has been specified as pic output format}
+\macrodef{ifpsfrag}{ifpsfrag}{({\sl if true},{\sl if false})}
+  {gen}
+  {Test if either {\tt psfrag} or {\tt psfrag\_} has been defined. For
+   postscript with psfrag strings, one or the other should be defined
+   prior to or at the beginning of the diagram}
+\macrodef{ifpstricks}{ifpstricks}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if \PSTricks~has been specified as post-processor}
+\macrodef{ifroff}{ifroff}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if {\bf troff} or {\bf groff} has been specified as post-processor}
+\macrodef{ifxfig}{ifxfig}{({\sl if true},{\sl if false})}
+  {gen}
+  {test if Fig 3.2 ({\tt dpic -x}) has been specified as pic output format}
+\macrodef{igbt}{igbt}{(\linespec,L|R,[L][[d]D])}
+  {cct}
+  {left or right IGBT, L=alternate gate type, D=parallel diode,
+   dD=dotted connections }
+\macrodef{in\_\_}{in__}{}
+  {gen}
+  {absolute inches}
+\macrodef{inductor}{inductor}{(\linespec,W|L,{\sl n},[M|P],{\sl loop wid})}
+  {cct}
+  {inductor, arg2: narrow (default), W=wide, L=looped;
+   arg3: {\sl n} arcs (default 4);
+   arg4: M=magnetic core, P=powder (dashed) core,
+   arg5: loop width (default L,W: {\tt dimen\_}/5; other: {\tt dimen\_}/8)
+   \seesect{Twoterminal:}}
+\macrodef{inner\_prod}{inner_prod}{({\sl linear obj},{\sl linear obj})}
+  {gen}
+  {inner product of (x,y) dimensions of two linear objects}
+\macrodef{Int\_}{Int_}{}
+  {gen}
+  {corrected (old) gpic $int()$ function}
+\macrodef{integrator}{integrator}{(\linespec,{\sl size})}
+  {cct}
+  {integrating amplifier\seesect{Twoterminal:}}
+\macrodef{intersect\_}{intersect_}{({\sl line1}.start,{\sl line1}.end,
+{\sl line2}.start,{\sl line2}.end)}
+  {gen}
+  {intersection of two lines}
+\macrodef{Intersect\_}{Intersect_}{({\sl Name1},{\sl Name2})}
+  {gen}
+  {intersection of two named lines}
+\macrodef{IOdefs}{IOdefs}{(\linespec,{\sl label},[P|N]*,L|R) }
+  {log}
+  {Define locations {\sl label}{\tt 1}, $\ldots$ {\sl label}{\tt n}
+    along the line; {\tt P}= label only;
+    {\tt N}=with {\tt NOT\_circle};
+    {\tt R}=circle to right of current direction }
+\macrodef{j\_fet}{j_fet}{(\linespec,L|R,P,E)}
+  {cct}
+  {left or right, N or P JFET, without or with envelope
+    \seesect{Semiconductors:}}
+\macrodef{jack}{jack}{(U|D|L|R|{\sl degrees},{\sl chars})}
+  {cct}
+  {arg1: drawing direction; string arg2: {\tt R}=right orientation,
+   one or more {\tt L[M][B]} for L and auxiliary contacts with make or break
+   points; {\tt S[M][B]} for S and auxiliary contacts
+   \seesect{Composite:}}
+\macrodef{KelvinR}{KelvinR}{({\sl cycles},[R],{\sl cycle wid})}
+  {cct}
+  {IEEE resistor in a {\tt [ ]} block with Kelvin taps {\sl T1} and {\sl T2}
+   \seesect{Composite:}}
+\macrodef{L\_unit}{L_unit}{}
+  {log}
+  {logic-element grid size}
+\macrodef{lamp}{lamp}{(\linespec, [R])}
+  {cct}
+  {Two-terminal incandescent lamp
+   \seesect{Twoterminal:}}
+\macrodef{larrow}{larrow}{({\sl label},{\tt ->|<-},{\sl dist})}
+  {cct}
+  {arrow {\sl dist} to left of last-drawn 2-terminal element
+   \seesect{Branchcurrent:}}
+\macrodef{lbox}{lbox}{({\sl wid}, {\sl ht}, {\sl type})}
+  {gen}
+  {box oriented in current direction, type= e.g.\ dotted}
+\macrodef{LCintersect}{LCintersect}{({\sl line name, Centre, rad,} [R])}
+  {gen}
+  { First (second if arg4 is R) intersection of a line with a circle}
+\macrodef{LCtangent}{LCtangent}{({\sl Pos1, Centre, rad,} [R])}
+  {gen}
+  { Left (right if arg4=R) tangent point of line
+     from Pos1 to circle at Centre with radius arg3}
+\macrodef{left\_}{left_}{}
+  {gen}
+  {left with respect to current direction \seesect{Placing:}}
+\macrodef{length3D}{length3D}{(x,y,z)}
+  {3D}
+  {Euclidean length of triple x,y,z}
+\macrodef{LEintersect}{LEintersect}{({\sl line name, Centre, ellipse wid,
+  ellipse ht}, [R])}
+  {gen}
+  { First (second if arg5 is R) intersection of a line with an ellipse}
+\macrodef{LEtangent}{LEtangent}{({\sl Pos1, Centre, ellips wid, ellipse ht}
+ [R])}
+  {gen}
+  { Left (right if arg5=R) tangent point of line
+     from Pos1 to ellipse at Centre with given width and height}
+\macrodef{lg\_bartxt}{lg_bartxt}{}
+  {log}
+  {draws an overline over logic-pin text (except for xfig)}
+\macrodef{lg\_pin}{lg_pin}{({\sl location, logical name, pin label},
+  n|e|s|w[L|M|I|O][N][E], {\sl pinno, optlen})}
+  {log}
+  {comprehensive logic pin; {\tt n|e|s|w}=direction,
+    {\tt L}=active low out, {\tt M}=active low in,
+    {\tt I}=inward arrow, {\tt O}=outward arrow,
+    {\tt N}=negated, {\tt E}=edge trigger}
+\macrodef{lg\_pintxt}{lg_pintxt}{}
+  {log}
+  {reduced-size text for logic pins}
+\macrodef{lg\_plen}{lg_plen}{}
+  {log}
+  {logic pin length in in {\tt L\_unit}s}
+\macrodef{LH\_symbol}{LH_symbol}{([U|D|L|R|{\sl degrees}][I])}
+  {log}
+  {logic-gate hysteresis symbol; {\tt I=}inverted}
+\macrodef{lin\_ang}{lin_ang}{({\sl line-reference})}
+  {gen}
+  {the angle from {\tt .start} to {\tt .end} of a line or move}
+\macrodef{lin\_leng}{lin_leng}{({\sl line-reference})}
+  {gen}
+  {length of a line, equivalent to {\sl line-reference}{\tt .len}
+   with dpic}
+\macrodef{linethick\_}{linethick_}{({\sl number})}
+  {gen}
+  {set line thickness in points}
+\macrodef{ljust\_}{ljust_}{}
+  {gen}
+  {ljust with respect to current direction}
+\macrodef{llabel}{llabel}{({\sl label},{\sl label},{\sl label})}
+  {cct}
+  {triple label on left side of the element \seesect{Labels:}}
+\macrodef{loc\_}{loc_}{({\sl x}, {\sl y})}
+  {gen}
+  {location adjusted for current direction}
+\macrodef{log\_init}{log_init}{}
+  {log}
+  {initialize environment for logic diagrams
+    (customizable, reads {\tt liblog.m4})}
+\macrodef{log10E\_}{log10E_}{}
+  {gen}
+  {constant $\log_{10}(e)$}
+\macrodef{loge}{loge}{}
+  {gen}
+  {logarithm, base $e$}
+\macrodef{Loopover\_}{Loopover_}{(`{\sl variable}',{\sl actions},{\sl value1,
+   value2, $\ldots$})}
+  {gen}
+  {Repeat {\sl actions} with {\sl variable} set successively to
+   {\sl value1, value2, $\ldots$}, setting macro {\tt m4Lx} to 1, 2, $\ldots$}
+\macrodef{lp\_xy}{lp_xy}{}
+  {log}
+  {coordinates used by {\tt lg\_pin}}
+\macrodef{lpop}{lpop}{({\sl xcoord}, {\sl ycoord}, {\sl radius}, {\sl fill},
+  {\sl zero ht})}
+  {gen}
+  {for lollipop graphs: filled circle with stem to (xcoord,zeroht)}
+\macrodef{lswitch}{lswitch}{( \linespec, L|R, {\sl chars} )}
+  {cct}
+  {knife switch R=right orientation (default L=left);
+    {\sl chars}=[O{\tt|}C][D][K][A] O=opening arrow; C=closing arrow; D=dots;
+    K=closed switch; A=blade arrowhead \seesect{Twoterminal:}}
+\macrodef{lt\_}{lt_}{}
+  {gen}
+  {left with respect to current direction}
+\macrodef{LT\_symbol}{LT_symbol}{(U|D|L|R|{\sl degrees})}
+  {log}
+  {logic-gate triangle symbol}
+\macrodef{lthick}{lthick}{}
+  {gen}
+  {current line thickness in drawing units}
+\macrodef{m4\_arrow}{m4_arrow}{(\linespec,{\sl ht},{\sl wid})}
+  {gen}
+  {arrow with adjustable head, filled when possible}
+\macrodef{m4dupstr}{m4dupstr}{({\sl string},{\sl n},`{\sl name}')}
+  {gen}
+  {Defines {\sl name} as {\sl n} concatenated copies of {\sl string}.}
+\macrodef{m4lstring}{m4lstring}{({\sl arg1},{\sl arg2})}
+  {gen}
+  {expand {\sl arg1} if it begins
+    with {\tt sprintf} or {\tt "}, otherwise {\sl arg2}}
+\macrodef{m4xpand}{m4xpand}{({\sl arg})}
+  {gen}
+  {Evaluate the argument as a macro}
+\macrodef{m4xtract}{m4xtract}{(`{\sl string1}',{\sl string2})}
+  {gen}
+  {delete {\sl string2} from {\sl string1}, return 1 if present}
+\macrodef{manhattan}{manhattan}{}
+  {gen}
+  {sets direction cosines for left, right, up, down}
+\macrodef{Max}{Max}{({\sl arg, arg, $\ldots$})}
+  {gen}
+  {Max of an arbitrary number of inputs}
+\macrodef{memristor}{memristor}{({\sl linespec, wid, ht})}
+  {cct}
+  {memristor element\seesect{Twoterminal:}}
+\macrodef{microphone}{microphone}{( U|D|L|R|{\sl degrees, size})}
+  {cct}
+  {microphone, {\sl In1} to {\sl In3} defined
+   \seesect{Composite:}}
+\macrodef{Min}{Min}{({\sl arg, arg, $\ldots$})}
+  {gen}
+  {Min of an arbitrary number of inputs}
+\macrodef{Mitre\_}{Mitre_}{%
+ ({\sl Line1,Line2,length,line attributes})}
+  {gen}
+  {e.g., {\tt Mitre\_(L,M)} draws angle at intersection of lines
+   L and M with legs of length arg3 (default {\tt linethick bp\_\_/2});
+   sets {\tt Here} to intersection
+    \seesect{Corners:}}
+\macrodef{mitre\_}{mitre_}{%
+ ({\sl Position1,Position2,Position3,length,line attributes})}
+  {gen}
+  {e.g., {\tt mitre\_(A,B,C)} draws angle ABC with legs
+   of length arg4 (default {\tt linethick bp\_\_/2});
+   sets {\tt Here} to Position2
+    \seesect{Corners:}}
+\macrodef{mm\_\_}{mm__}{}
+  {gen}
+  {absolute millimetres}
+\macrodef{mosfet}{mosfet}{(\linespec,L|R,{\sl chars},E)}
+  {cct}
+  {MOSFET left or right, included components defined by characters, envelope.
+   arg 3 chars:
+      {\tt [u][d]B:} center bulk connection pin;
+      {\tt D:} D pin and lead;
+      {\tt E:} dashed substrate;
+      {\tt F:} solid-line substrate;
+      {\tt [u][d]G:} G pin to substrate at source;
+      {\tt [u][d]H:} G pin to substrate at center;
+      {\tt L:} G pin to channel (obsolete);
+      {\tt [u][d]M:} G pin to channel; u: at drain end; d: at source end
+      {\tt [u][d]M{\sl n}:} multiple gates G0 to G{\sl n}
+      {\tt Pz:} parallel zener diode;
+      {\tt Q:} connect B pin to S pin;
+      {\tt R:} thick channel;
+      {\tt [u][d]S:} S pin and lead u: arrow up; d: arrow down;
+      {\tt [d]T:} G pin to center of channel d: not circle;
+      {\tt X:} XMOSFET terminal;
+      {\tt Z:} simplified complementary MOS
+    \seesect{Semiconductors:}}
+\macrodef{Mux\_ht}{Mux_ht}{}
+  {cct}
+  {Mux height parameter in {\tt L\_unit}s}
+\macrodef{Mux\_wid}{Mux_wid}{}
+  {cct}
+  {Mux width parameter in {\tt L\_unit}s}
+\macrodef{Mux}{Mux}{({\sl n},{\sl label},
+   {\tt [L][B|H|X][N[{\sl n}]|S[{\sl n}]][[N]OE],
+   {\sl wid},{\sl ht}})}
+  {log}
+  {binary multiplexer, $n$ inputs,
+    {\tt L} reverses input pin numbers,
+    {\tt B} display binary pin numbers,
+    {\tt H} display hexadecimal pin numbers,
+    {\tt X} do not print pin numbers,
+    {\tt N[{\sl n}]} puts Sel or Sel$0$ .. Sel$n$ at the top
+    (i.e., to the left of the drawing direction),
+    {\tt S[{\sl n}]} puts the Sel inputs at the bottom (default)
+    {\tt OE} ({\tt N=}negated) {\tt OE} pin
+    \seesect{Logicgates:}}
+\macrodef{Mx\_pins}{Mx_pins}{}
+  {log}
+  {max number of gate inputs without wings}
+\macrodef{n\_}{n_}{}
+  {gen}
+  {.n with respect to current direction}
+\macrodef{N\_diam}{N_diam}{}
+  {log}
+  {diameter of `not' circles in {\tt L\_unit}s}
+\macrodef{N\_rad}{N_rad}{}
+  {log}
+  {radius of `not' circles in {\tt L\_unit}s}
+\macrodef{NAND\_gate}{NAND_gate}{({\sl n},N)}
+  {log}
+  {`nand' gate, 2 or {\sl n\/} inputs; N=negated input.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs.
+    \seesect{Logicgates:}}
+\macrodef{ne\_}{ne_}{}
+  {gen}
+  {.ne with respect to current direction}
+\macrodef{NeedDpicTools}{NeedDpicTools}{}
+  {gen}
+  {executes {\tt copy "HOMELIB\_/dpictools.pic"} if the file has not been read}
+\macrodef{neg\_}{neg_}{}
+  {gen}
+  {unary negation}
+\macrodef{NOR\_gate}{NOR_gate}{({\sl n},N)}
+  {log}
+  {`nor' gate, 2 or {\sl n\/} inputs; N=negated input.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs.
+    \seesect{Logicgates:}}
+\macrodef{norator}{norator}{(\linespec,{\sl width},{\sl ht})}
+  {cct}
+  { norator two-terminal element \seesect{Twoterminal:}}
+\macrodef{NOT\_circle}{NOT_circle}{}
+  {log}
+  {`not' circle}
+\macrodef{NOT\_gate}{NOT_gate}{(\linespec,[B][N|n],{\sl wid},{\sl height})}
+  {log}
+  {`not' gate.
+   When {\sl linespec} is blank then the element is composite and In1,
+   Out, C, NE, and SE are defined; otherwise the element is drawn as
+   a two-terminal element. arg2: {\tt B}=box gate, {\tt N}=not circle at input
+   and output, {\tt n}=not circle at input only 
+    \seesect{Logicgates:}}
+\macrodef{NOT\_rad}{NOT_rad}{}
+  {log}
+  {`not' radius in absolute units}
+\macrodef{NPDT}{NPDT}{({\sl npoles,}[R])}
+  {cct}
+  {Double-throw switch; {\sl npoles:} number of poles;
+   {\tt R}= right orientation with respect to drawing direction
+   \seesect{Composite:}}
+\macrodef{nport}{nport}{({\sl box spec{\tt ;}other commands,
+nw,nn,ne,ns,space ratio,pin lgth,style, other commands})}
+  {cct}
+  { Default is a standard-box twoport.  Args 2 to 5 are
+    the number of ports to be drawn on w, n, e, s sides.
+    The port pins are named by side, number, and by a or b pin,
+    e.g., W1a, W1b, W2a, $\ldots$
+    Arg 6 specifies the ratio of port width to interport space (default 2),
+    and arg 7 is the pin length.  Set arg 8 to N to omit the dots on
+    the port pins. Arguments 1 and 9 allow customizations
+   \seesect{Composite:}}
+\macrodef{nterm}{nterm}{({\sl box spec{\tt ;}other commands,
+nw,nn,ne,ns,pin lgth,style, other commands})}
+  {cct}
+  {n-terminal box macro (default three pins).
+   Args 2 to 5 are the number of pins to be drawn on W, N, E, S sides.
+   The pins are named by side and number, e.g. W1, W2, N1, $\ldots$
+   Arg 6 is the pin length.  Set arg 7 to N to omit the dots
+   on the pins. Arguments 1 and 8 allow customizations, e.g.
+   {\tt nterm(,{,},{,},{,}N,"\$a\$" at Box.w ljust,"\$b\$" at Box.e rjust,
+      "\$c\$" at Box.s above)} }
+\macrodef{nullator}{nullator}{(\linespec,{\sl width},{\sl ht})}
+  {cct}
+  { nullator two-terminal element \seesect{Twoterminal:}}
+\macrodef{nw\_}{nw_}{}
+  {gen}
+  {.nw with respect to current direction}
+\macrodef{NXOR\_gate}{NXOR_gate}{({\sl n},N)}
+  {log}
+  {`nxor' gate, 2 or {\sl n\/} inputs; N=negated input.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs.
+    \seesect{Logicgates:}}
+\macrodef{opamp}{opamp}{(\linespec,{\sl label},{\sl label},{\sl size},{\sl
+    chars}, other commands)}
+  {cct}
+  {operational amplifier with $-,$ $+$ or other internal labels,
+    specified size. {\sl chars:} {\tt P=} add power connections,
+    {\tt R=} swap In1, In2 labels,
+    {\tt T=} truncated point.
+    The first and last arguments allow added customizations 
+   \seesect{Composite:}}
+\macrodef{open\_arrow}{open_arrow}{(\linespec,{\sl ht},{\sl wid})}
+  {gen}
+  {arrow with adjustable open head}
+\macrodef{OR\_gate}{OR_gate}{({\sl n},N)}
+  {log}
+  {`or' gate, 2 or {\sl n\/} inputs; N=negated input.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs.
+    \seesect{Logicgates:}}
+\macrodef{OR\_gen}{OR_gen}{($n$,{\sl chars},[{\sl wid},[{\sl ht}]])}
+  {log}
+  {general OR gate: $n$=number of inputs $(0\leq n\leq 16)$;
+    {\sl chars:} B=base and straight sides; A=Arcs;
+           [N]NE,[N]SE,[N]I,[N]N,[N]S=inputs or circles;
+           [N]P=XOR arc; [N]O=output; C=center.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs.}
+\macrodef{OR\_rad}{OR_rad}{}
+  {log}
+  {radius of OR input face in {\tt L\_unit}s}
+\macrodef{parallel\_}{parallel_}{(\char96{\sl elementspec}\char39,%
+ \char96{\sl elementspec}\char39 $\ldots$)}
+  {cct}
+  { Parallel combination of two-terminal elements in a {\tt [ ]} block.
+    Each argument is a {\em quoted} elementspec of the form
+    {\tt[Sep={\sl val};][{\sl Label}:] {\sl element}; [{\sl attributes}]}
+    where an {\sl attribute} is of the form
+    {\tt[llabel($\ldots$);] | [rlabel($\ldots$);] | [b\_current($\ldots$);]}.
+    An argument may also be {\tt series\_($\ldots$)} or
+    {\tt parallel\_($\ldots$)} {\em without} attributes or quotes. 
+    Sep={\sl val}; in the first branch sets the default
+    separation of all branches to {\sl val}; in a later
+    element Sep={\sl val}; applies only to that branch.
+    An element may have normal arguments but should
+    not change the drawing direction.
+   \seesect{Seriesandparallel:}}
+%\macrodef{par\_}{par_}{({\sl element},{\sl element},{\sl separation})}
+%  {cct}
+%  {two same-direction, same-length elements in parallel}
+\macrodef{pc\_\_}{pc__}{}
+  {gen}
+  {absolute points}
+\macrodef{px\_\_}{px__}{}
+  {gen}
+  {absolute SVG screen pixels}
+\macrodef{pconnex}{pconnex}{(R|L|U|D|{\sl degrees},{\sl chars})}
+  {cct}
+  {power connectors, arg 1: drawing direction; {\sl chars:}
+   {\tt R}=right orientation,
+   {\tt M|F}= male, female,
+   {\tt A|AC}=115V, 3 prong, B=box, C=circle,
+   {\tt P}= PC connector,
+   {\tt D}= 2-pin connector,
+   {\tt G|GC}= GB 3-pin,
+   {\tt J}= 110V 2-pin
+    \seesect{Composite:}}
+\macrodef{pi\_}{pi_}{}
+  {gen}
+  {$\pi$}
+\macrodef{plug}{plug}{(U|D|L|R|{\sl degrees},[2|3][R])}
+  {cct}
+  {arg1: drawing direction; string arg2: {\tt R} right orientation,
+   {\tt 2|3} number of conductors
+   \seesect{Composite:}}
+\macrodef{pmod}{pmod}{({\sl integer}, {\sl integer})}
+  {gen}
+  {+ve $\hbox{mod}(M,N)$ e.g., $\hbox{\tt pmod}(-3,5)=2$}
+\macrodef{point\_}{point_}{({\sl angle})}
+  {gen}
+  {(radians) set direction cosines}
+\macrodef{Point\_}{Point_}{({\sl integer})}
+  {gen}
+  {sets direction cosines in degrees \seesect{Placing:}}
+\macrodef{polar\_}{polar_}{({\sl x},{\sl y})}
+  {gen}
+  {rectangular-to polar conversion}
+\macrodef{potentiometer}{potentiometer}{(\linespec,%
+  {\sl cycles},{\sl fractional pos},{\sl length},$\cdots$)}
+  {cct}
+  {resistor with taps T1, T2, $\ldots$
+    with specified fractional positions and lengths (possibly neg) 
+   \seesect{Composite:}}
+\macrodef{print3D}{print3D}{(x,y,z)}
+  {3D}
+  {write out triple for debugging}
+\macrodef{prod\_}{prod_}{({\sl a},{\sl b})}
+  {gen}
+  {binary multiplication}
+\macrodef{project}{project}{({\sl x},({\sl y},({\sl z})}
+  {3D}
+  {3D to 2D projection onto the plane perpendicular to the view vector with
+   angles defined by {\tt setview({\sl azim, elev})}}
+\macrodef{psset\_}{psset_}{({\sl PSTricks settings})}
+  {gen}
+  {set PSTricks parameters}
+\macrodef{pt\_\_}{pt__}{}
+  {gen}
+  {\TeX\ point-size factor, in scaled inches, ({\tt *scale/72.27})}
+\macrodef{ptrans}{ptrans}{(\linespec, [R|L])}
+  {cct}
+  {pass transistor; {\tt L=} left orientation
+    \seesect{Semiconductors:}}
+\macrodef{r\_}{r_}{}
+  {gen}
+  {red color value}
+\macrodef{rarrow}{rarrow}{({\sl label,{\tt ->|<-},{\sl dist}})}
+  {cct}
+  {arrow {\sl dist} to right of last-drawn 2-terminal element
+   \seesect{Branchcurrent:}}
+\macrodef{Rect\_}{Rect_}{({\sl radius},{\sl angle})}
+  {gen}
+  {(deg) polar-to-rectangular conversion}
+\macrodef{rect\_}{rect_}{({\sl radius},{\sl angle})}
+  {gen}
+  {(radians) polar-rectangular conversion}
+\macrodef{reed}{reed}{({\sl linespec, width, height, box attribues}, [R][C])}
+  {cct}
+  {Enclosed reed two-terminal contact;
+   {\tt R}=right orientation; {\tt C}=closed contact;
+   e.g., {\tt reed(,,dimen\_/5,shaded "lightgreen"}
+   \seesect{Composite:}}
+  {cct}
+  {relay: n poles (default 1), {\sl chars:} {\tt O}=normally open,
+    {\tt C}=normally closed, {\tt P}=three position, default double throw,
+    {\tt L}=drawn left (default),
+    {\tt R}=drawn right, {\tt T}=thermal.
+    Argument 3={\tt [L|R]} is deprecated but works for
+    backward compatibility
+   \seesect{Composite:}}
+\macrodef{resetdir\_)}{resetdir_)}{}
+  {gen}
+  {resets direction set by {\tt setdir\_}}
+\macrodef{resetrgb}{resetrgb}{}
+  {gen}
+  {cancel {\tt r\_, g\_, b\_} color definitions}
+\macrodef{resistor}{resistor}{(\linespec,n|E,{\sl chars}, {\sl
+    cycle wid})}
+  {cct}
+  {resistor, n cycles (default 3), {\sl chars:}
+    {\tt E}={\tt ebox},
+    {\tt ES}={\tt ebox} with slash,
+    {\tt Q}=offset,
+    {\tt H}=squared,
+    {\tt N}=IEEE,
+    {\tt V}=varistor variant,
+    {\tt R}=right-oriented,
+    {\sl cycle width} (default {\tt dimen\_}$/6$) \seesect{Twoterminal:}}
+\macrodef{resized}{resized}{({\sl factor},`{\sl macro name}',args)}
+  {cct}
+  {scale the element body size by {\sl factor}}
+\macrodef{restorem4dir}{restorem4dir}{([`{\sl stack name}'])}
+  {gen}
+  {Restore m4 direction parameters from the named stack;
+    default {\tt `savm4dir\_'}}
+\macrodef{reversed}{reversed}{(`{\sl macro name}',args)}
+  {cct}
+  {reverse polarity of 2-terminal element}
+\macrodef{rgbdraw}{rgbdraw}{({\sl color triple}, {\sl drawing commands})}
+  {gen}
+  {color drawing for PSTricks, pgf, MetaPost, svg postprocessors;
+   (color entries are 0 to 1 except for SVG entries which are 0 to 255),
+   see {\tt setrgb} \seesect{Semiconductors:}}
+\macrodef{rgbfill}{rgbfill}{({\sl color triple}, {\sl closed path})}
+  {gen}
+  {fill with arbitrary color (color entries are 0 to 1 except 
+   SVG entries which are 0 to 255); see {\tt setrgb}\seesect{Semiconductors:}}
+\macrodef{rgbstring}{rgbstring}{({\sl color triple or color name})}
+  {gen}
+  {evaluates to a string compatible with the postprocessor in use
+   to go with {\tt colored}, {\tt shaded}, or {\tt outlined} attributes.
+   (PSTricks, metapost, pgf-tikz, pdf, postscript, svg).
+   The arguments are fractions
+   in the range $[0,1]$; For example,
+   {\tt box outlined rgbstring(0.1,0.2,0.7) shaded rgbstring(0.75,0.5,0.25)}.
+   For those postprocessors that allow it,
+   there can be one argument which is the name of a defined color}
+\macrodef{right\_}{right_}{}
+  {gen}
+  {set current direction right \seesect{Placing:}}
+\macrodef{rjust\_}{rjust_}{}
+  {gen}
+  {right justify with respect to current direction}
+\macrodef{rlabel}{rlabel}{({\sl label},{\sl label},{\sl label})}
+  {cct}
+  {triple label on right side of the element \seesect{Labels:}}
+\macrodef{rot3Dx}{rot3Dx}{({\sl radians,x,y,z})}
+  {3D}
+  {rotates x,y,z about x axis}
+\macrodef{rot3Dy}{rot3Dy}{({\sl radians,x,y,z})}
+  {3D}
+  {rotates x,y,z about y axis}
+\macrodef{rot3Dz}{rot3Dz}{({\sl radians,x,y,z})}
+  {3D}
+  {rotates x,y,z about z axis}
+\macrodef{Rot\_}{Rot_}{({\sl position, degrees})}
+  {gen}
+  {rotate position by degrees}
+\macrodef{rot\_}{rot_}{({\sl x, y, angle})}
+  {gen}
+  {rotate {\sl x,y} by theta radians}
+\macrodef{rotbox}{rotbox}{({\sl wid,ht,type},[r|t={\sl val}])}
+  {gen}
+  {box oriented in current direction in {\tt [ ]} block;
+   {\sl type}= e.g. {\tt dotted shaded "green".}  Defined
+   internal locations: N, E, S, W (and NE, SE, NW, SW if arg4 is blank).
+   If arg4 is {\tt r=}{\sl val} then corners have radius {\sl val}.
+   If arg4 is {\tt t=}{\sl val} then a spline with tension {\sl val}
+   is used to draw a ``superellipse,'' and the bounding box is then
+   only approximate. }
+\macrodef{rotellipse}{rotellipse}{({\sl wid,ht,type})}
+  {gen}
+  {ellipse oriented in current direction in {\tt [ ]} block;
+   e.g. {\tt Point\_(45); rotellipse(,{},dotted fill\_(0.9)).} Defined internal
+   locations: N, S, E, W.}
+\macrodef{round}{round}{(at {\sl location,line thickness,attributes})}
+  {gen}
+  {filled circle for rounded corners; attributes={\tt colored "gray"} 
+   for example; leaves {\tt Here} unchanged if arg1 is blank
+    \seesect{Corners:}}
+\macrodef{rpoint\_}{rpoint_}{(\linespec)}
+  {gen}
+  {set direction cosines}
+\macrodef{rpos\_}{rpos_}{({\sl position})}
+  {gen}
+  {Here + {\sl position}}
+\macrodef{rrot\_}{rrot_}{({\sl x, y, angle})}
+  {gen}
+  {\tt Here + vrot\_({\sl x, y, cos(angle), sin(angle))}}
+\macrodef{rs\_box}{rs_box}{({\sl text},{\sl expr1},$\cdots$)}
+  {gen}
+  {like {\tt s\_box} but the text is rotated by {\tt text\_ang}
+   (default 90) degrees \seesect{Interaction:}, \seesect{Pstricks:}}
+\macrodef{rsvec\_}{rsvec_}{({\sl position})}
+  {gen}
+  {Here + {\sl position}}
+\macrodef{rt\_}{rt_}{}
+  {gen}
+  {right with respect to current direction}
+\macrodef{rtod\_\_}{rtod__}{}
+  {gen}
+  {constant, degrees/radian}
+\macrodef{rtod\_}{rtod_}{}
+  {gen}
+  {constant, degrees/radian}
+\macrodef{rvec\_}{rvec_}{({\sl x},{\sl y})}
+  {gen}
+  {location relative to current direction}
+\macrodef{s\_}{s_}{}
+  {gen}
+  {.s with respect to current direction}
+\macrodef{s\_box}{s_box}{({\sl text},{\sl expr1},$\cdots$)}
+  {gen}
+  {generate dimensioned text string using {\tt\char92{}boxdims} from
+    {\tt boxdims.sty}. Two or more args are passed to {\tt sprintf()}
+   (default 90) degrees \seesect{Interaction:}}
+\macrodef{s\_dp}{s_dp}{({\sl name},{\sl default})}
+  {gen}
+  {depth of the most recent (or named) {\tt s\_box}
+    \seesect{Interaction:}}
+\macrodef{s\_ht}{s_ht}{({\sl name},{\sl default})}
+  {gen}
+  {height of the most recent (or named) {\tt s\_box}
+    \seesect{Interaction:}}
+\macrodef{s\_init}{s_init}{({\sl name})}
+  {gen}
+  {initialize {\tt s\_box} string label to {\sl name} which should be unique
+    \seesect{Interaction:}}
+\macrodef{s\_name}{s_name}{}
+  {gen}
+  {the value of the last {\tt s\_init} argument
+    \seesect{Interaction:}}
+\macrodef{s\_wd}{s_wd}{({\sl name},{\sl default})}
+  {gen}
+  {width of the most recent (or named) {\tt s\_box}
+    \seesect{Interaction:}}
+\macrodef{savem4dir}{savem4dir}{([`{\sl stack name}'])}
+  {gen}
+  {Stack m4 direction parameters in the named stack
+    (default {\tt `savm4dir\_'})}
+\macrodef{sbs}{sbs}{({\sl linespec, chars, label})}
+  {cct}
+  {Wrapper to place an SBS thyristor as a two-terminal element with
+   {\tt [ ]} block label given by the third argument
+    \seesect{Semiconductors:}}
+\macrodef{sc\_draw}{sc_draw}{({\sl dna string, chars, iftrue, iffalse})}
+  {cct}
+  {test if chars are in string, deleting chars from string}
+\macrodef{scr}{scr}{({\sl linespec, chars, label})}
+  {cct}
+  {Wrapper to place an SCR thyristor as a two-terminal element with
+   {\tt [ ]} block label given by the third argument
+    \seesect{Semiconductors:}}
+\macrodef{scs}{scs}{({\sl linespec, chars, label})}
+  {cct}
+  {Wrapper to place an SCS thyristor as a two-terminal element with
+   {\tt [ ]} block label given by the third argument
+    \seesect{Semiconductors:}}
+\macrodef{se\_}{se_}{}
+  {gen}
+  {.se with respect to current direction}
+\macrodef{series\_}{series_}{({\sl elementspec}, {\sl elementspec}, $\ldots$)}
+  {cct}
+  { Series combination in a {\tt []} block of elements
+    with shortened default length.  An {\sl elementspec} is of the form
+    {\tt [{\sl Label}:] {\sl element}; [{\sl attributes}]},
+    where an {\sl attribute} is of the form
+    {\tt [llabel($\ldots$);] | [rlabel($\ldots$);] [b\_current($\ldots$);]}.
+    Internal points {\tt Start}, {\tt End}, and {\tt C} are defined
+   \seesect{Seriesandparallel:} }
+\macrodef{setdir\_}{setdir_}{(R|L|U|D|{\sl degrees}, {\sl default} U|D|R|L|{\sl degrees})}
+  {gen}
+  {store drawing direction and set it to
+    up, down, left, right, or angle in degrees (reset by {\tt resetdir\_}).
+    The directions may be spelled out, i.e., Right, Left, $\ldots$
+   \seesect{Seriesandparallel:}}
+\macrodef{setrgb}{setrgb}{({\sl red value, green value, blue value},[{\sl
+   name}])}
+  {gen}
+  {define colour for lines and text, optionally named (default {\tt lcspec});
+   svg values are integers from 0 to 255\seesect{Semiconductors:}}
+\macrodef{setview}{setview}{({\sl azimuth degrees},{\sl elevation degrees})}
+  {3D}
+  {set projection viewpoint}
+\macrodef{sfg\_init}{sfg_init}{({\sl default line len, node rad, arrowhd len,
+  arrowhd wid}), (reads {\tt libcct.m4})}
+  {cct}
+  {initialization of signal flow graph macros}
+\macrodef{sfgabove}{sfgabove}{}
+  {cct}
+  {like above but with extra space}
+\macrodef{sfgarc}{sfgarc}{(\linespec,{\sl text},{\sl text justification},cw|ccw,
+    {\sl height scale factor})}
+  {cct}
+  {directed arc drawn between nodes, with text label
+    and a height-adjustment parameter }
+\macrodef{sfgbelow}{sfgbelow}{}
+  {cct}
+  {like below but with extra space}
+\macrodef{sfgline}{sfgline}{(\linespec,{\sl text},{\sl text justification})}
+  {cct}
+  {directed straight line chopped by node radius, with text label}
+\macrodef{sfgnode}{sfgnode}{(at {\sl location},{\sl text},above|below,{\sl
+   circle options})}
+  {cct}
+  {small circle default white interior, with text label. The default label
+  position is inside if the diameter is bigger than {\tt textht} and
+  {\tt textwid}; otherwise it is {\tt sfgabove.} Options such as fill or
+  line thickness can be given.}
+\macrodef{sfgself}{sfgself}{(at {\sl location}, U|D|L|R|{\sl degrees},
+   {\sl text}, {\sl text justification}, cw|ccw, {\sl scale factor})}
+  {cct}
+  {self-loop drawn at angle {\sl angle} from a node,
+     with text label and a size-adjustment parameter }
+\macrodef{shade}{shade}{({\sl gray value},{\sl closed line specs})}
+  {gen}
+  {fill arbitrary closed curve}
+\macrodef{shadebox}{shadebox}{({\sl box specification})}
+  {gen}
+  {box with edge shading}
+\macrodef{ShadedPolygon}{ShadedPolygon}{({\sl vertexseq, line attributes,
+  degrees, colorseq})}
+  {gen}
+  {Draws the polygon specified in arg1 and shades the interior according
+   to arg4 by drawing lines perpendicular to the angle in arg3.
+   The {\sl vertexseq} is a colon ({\tt:}) separated sequence of vertex
+   positions (or names) of the polygon in cw or ccw order. A {\sl colorseq}
+   is of the form 0, r0,g0,b0, {\sl frac1},r1,g1,b1, {\sl frac2},r2,g2,b2,
+   \ldots 1,rn,gn,bn with $0 < \hbox{\sl frac1} < \hbox{\sl frac2} \ldots 1$
+}
+\macrodef{SIdefaults}{SIdefaults}{}
+  {gen}
+  {Sets {\tt scale = 25.4} for drawing units in mm, and sets
+   pic parameters {\tt lineht = 12, linewid = 12, moveht = 12, movewid = 12,
+    arcrad = 6, circlerad = 6, boxht = 12, boxwid = 18, ellipseht = 12,
+    ellipsewid = 18, dashwid = 2, arrowht = 3, arrowwid = arrowht/2,}}
+\macrodef{sign\_}{sign_}{({\sl number})}
+  {gen}
+  {sign function}
+\macrodef{Sin}{Sin}{({\sl integer})}
+  {gen}
+  {sine function, {\sl integer\/} degrees}
+\macrodef{sinc}{sinc}{({\sl number})}
+  {gen}
+  {the $\hbox{sinc}(x)$ function}
+\macrodef{sind}{sind}{({\sl arg})}
+  {gen}
+  {sine of an expression in degrees}
+\macrodef{sinusoid}{sinusoid}{({\sl amplitude, frequency, phase, tmin, tmax,
+   linetype})}
+  {gen}
+  {draws a sinusoid over the interval
+  $(t_{\hbox{\scriptsize min}}, t_{\hbox{\scriptsize max}})$;
+   e.g., to draw a dashed sine curve, amplitude {\sl a}, of {\sl n} cycles
+   of length {\sl x} from {\sl A},
+   {\tt sinusoid(a,twopi\_*n/x,-pi\_/2,0,x,dashed) with .Start at A}}
+\macrodef{source}{source}{(\linespec,V|v|I|i|AC|B|F|G|H|Q|L|N|P|S|T|X|U|{\sl
+   other},{\sl diameter},R)}
+  {cct}
+  {source, blank or voltage (2 types), current (2 types), AC,
+   or type F, G, Q, B, L, N, X or labelled, 
+   H = step (Heaviside),
+   P = pulse, U = square, R = ramp,
+   S = sinusoid, T = triangle; other = custom interior label or waveform,
+   R = reversed polarity \seesect{Twoterminal:}}
+\macrodef{sourcerad\_}{sourcerad_}{}
+  {cct}
+  {default source radius}
+\macrodef{sp\_}{sp_}{}
+  {gen}
+  {evaluates to medium space for gpic strings}
+\macrodef{speaker}{speaker}{( U|D|L|R|{\sl degrees},{\sl size},H)}
+  {cct}
+  {speaker, {\sl In1} to {\sl In7} defined; {\tt H}=horn
+   \seesect{Composite:}}
+\macrodef{sprod3D}{sprod3D}{(a,x,y,z)}
+  {3D}
+  {scalar product of triple x,y,z by a}
+\macrodef{sqrta}{sqrta}{({\sl arg})}
+  {gen}
+  {square root of the absolute value of {\sl arg}; i.e.,
+   {\tt sqrt(abs({\sl arg}))}}
+\macrodef{SQUID}{SQUID}{({\sl n, diameter, initial angle}, {\tt ccw|cw})}
+  {cct}
+  {Superconducting quantum interface device
+   with {\sl }n junctions labeled {\tt J1, ... J}{\sl n}
+   placed around a circle with initial
+   angle -90 deg (by default) with respect
+   to the current drawing direction. The
+   default diameter is {\tt dimen\_} }
+\macrodef{stackargs\_}{stackargs}{(`{\sl stackname}',{\sl args})}
+  {gen}
+  {Stack arg 2, arg 3, ... onto the named stack up to a blank arg}
+\macrodef{stackcopy\_}{stackcopy_}{(`{\sl name 1}',`{\sl name 2}')}
+  {gen}
+  {Copy stack 1 into stack 2, preserving the order of pushed elements}
+\macrodef{stackdo\_}{stackdo}{(`{\sl stackname}',{\sl commands})}
+  {gen}
+  {Empty the stack to the first blank entry, performing arg 2}
+\macrodef{stackexec\_}{stackexec_}{(`{\sl name 1}',`{\sl name 2}',%
+ {\sl commands})}
+  {gen}
+  {Copy stack 1 into stack 2, performing arg3 for each nonblank entry}
+\macrodef{stackprint\_}{stackprint_}{(`{\sl stack name}')}
+  {gen}
+  {Print the contents of the stack to the terminal}
+%\macrodef{stackpromote\_}{stackpromote_}{({\sl prefix},%
+% `{\sl stack name}',{\sl In name})}
+%  {gen}
+%  {Define locations {\tt In1} or {\sl In name }{\tt 1}, $\ldots$ corresponding
+%   to the locations in stack {\sl stack name}, as created by the
+%   {\tt AutoGate} and {\tt Autologic} macros.  Each location is prefixed
+%   by argument 1 ``.''}
+\macrodef{stackreverse\_}{stackreverse_}{(`{\sl stack name}')}
+  {gen}
+  {Reverse the order of elements in a stack, preserving the name}
+\macrodef{stacksplit\_}{stacksplit_}{(`{\sl stack name}',{\sl string},{\sl
+   separator})}
+  {gen}
+  {Stack the fields of {\sl string} left to right separated by nonblank
+    {\sl separator} (default .).  White space preceding the fields is ignored.}
+\macrodef{sum\_}{sum_}{({\sl a},{\sl b})}
+  {gen}
+  {binary sum}
+\macrodef{sum3D}{sum3D}{({\sl x1,y1,z1,x2,y2,z2})}
+  {3D}
+  {sum of two triples}
+\macrodef{sus}{sus}{({\sl linespec, chars, label})}
+  {cct}
+  {Wrapper to place an SUS thyristor as a two-terminal element with
+   {\tt [ ]} block label given by the third argument
+    \seesect{Semiconductors:}}
+\macrodef{svec\_}{svec_}{({\sl x},{\sl y})}
+  {log}
+  {scaled and rotated grid coordinate vector}
+\macrodef{sw\_}{sw_}{}
+  {gen}
+  {.sw with respect to current direction}
+\macrodef{switch}{switch}{(\linespec,L|R,[C|O][D],[B|D])}
+  {cct}
+  {SPST switch (wrapper for bswitch, lswitch, and dswitch),
+    arg2: R=right orientation (default L=left);
+     if arg4=blank (knife switch): arg3 = [O{\tt|}C][D][A]
+       O= opening, C=closing, D=dots, A=blade arrowhead;
+     if arg4=B (button switch): arg3 = O{\tt|}C
+       O=normally open, C=normally closed,
+     if arg4=D: arg3 = same as for dswitch \seesect{Twoterminal:}}
+\macrodef{ta\_xy}{ta_xy}{({\sl x, y})}
+  {cct}
+  {macro-internal coordinates adjusted for {\tt L|R}}
+\macrodef{tapped}{tapped}{(`{\sl two-terminal element}',
+  [{\sl arrowhd} | type={\sl arrowhd};name={\sl Name}],
+    {\sl fraction, length, fraction, length,} $\cdots$)}
+  {cct}
+  {Draw the two-terminal element with taps in a [ ] block (see {\tt addtaps}).
+   {\sl arrowhd} = blank or one of {\tt . - <- -> <->}.
+   Each fraction determines the position along the element body of the tap.
+   A negative length draws the tap to the right of the current
+   direction; positive length to the left.
+   Tap names are Tap1, Tap2, $\cdots$ by default  or
+   Name1, Name2, $\cdots$ if specified.
+   Internal block names are {\tt .Start, .End,} and {.C} corresponding to the
+   drawn element, and the tap names 
+   \seesect{Composite:} }
+\macrodef{tbox}{tbox}{({\sl text,wid,ht},<|>|<>,{\sl type})}
+  {cct}
+  {Pointed terminal box. The {\sl text} is placed at the rectangular center
+   in math mode unless the text begins with {\tt "} or {\tt sprintf} in which
+   case the arument is used literally.  Arg 4 determines whether the point is
+   forward, backward, or both with respect to the current drawing direction.
+    \seesect{Composite:}}
+\macrodef{tconn}{tconn}{({\sl linespec,}>|>>|<|<<|O[F],{\sl wid})}
+  {cct}
+  {Terminal connector, {\tt O}=circle; {\tt OF}=filled circle;
+   {\tt > or >>} output connector
+   (default {\tt >}) ;
+   {\tt < or << input connector}; arg3 is arrowhead width or circle diameter 
+    \seesect{Composite:}}
+\macrodef{tgate}{tgate}{({\sl linespec,} [B][R|L])}
+  {cct}
+  {transmission gate, {\tt B=} ebox type; {\tt L=} oriented left
+    \seesect{Semiconductors:}}
+\macrodef{thermocouple}{thermocouple}{({\sl linespec, wid, ht,} L|R)}
+  {cct}
+  { Thermocouple drawn to the left (by default) of the {\sl linespec}
+    line.  If the {\sl linespec} length equals {\sl wid}
+    (default {\tt dimen\_/5}), then only the two branches appear. 
+    {\tt R=} right orientation.
+    \seesect{Twoterminal:}}
+\macrodef{thicklines\_}{thicklines_}{({\sl number})}
+  {gen}
+  {set line thickness in points}
+\macrodef{thinlines\_}{thinlines_}{({\sl number})}
+  {gen}
+  {set line thickness in points}
+\macrodef{threeD\_init}{threeD_init}{}
+  {3D}
+  {initialize 3D transformations (reads {\tt lib3D.m4})}
+\macrodef{thyristor}{thyristor}{(\linespec,%
+ {\tt [SCR|SCS|SUS|SBS|IEC][{\sl chars}]})}
+  {cct}
+  {Composite thyristor element in {\tt []}block:
+   types
+                                   SCR: silicon controlled rectifier (default),
+                                   SCS: silicon controlled switch,
+                                   SUS: silicon unilateral switch,
+                                   SBS: silicon bilateral switch,
+                                   IEC: type IEC.
+   {\sl Chars} to modify or define the element:
+                                   K: open arrowheads,
+                                   A: arrowhead,
+                                   F: half arrowhead,
+                                   B: bidirectional diode,
+                                   E: adds envelope,
+                                   H: perpendicular gate (endpoint G),
+                                   N: anode gate (endpoint Ga),
+                                   U: centre line in diodes
+                                 V: perpendicular gate across arrowhead centre,
+                                   R=right orientation,
+                                   E=envelope
+    \seesect{Semiconductors:}}
+\macrodef{tikznode}{tikznode}{({\sl \Tikz node name, position}) }
+  {pgf}
+  {insert \Tikz code to define a zero-size \Tikz node at {\sl location}
+    (default {\tt Here}) to assist with inclusion of \pic code output in
+    \Tikz diagrams.  This macro must be invoked in the outermost \pic scope.
+    \seesect{Tikzwithpic:}}
+\macrodef{tline}{tline}{(\linespec,{\sl wid},{\sl ht}) }
+  {cct}
+  {transmission line, manhattan direction\seesect{Twoterminal:}}
+\macrodef{tr\_xy\_init}{tr_xy_init}{({\sl origin, unit size, sign })}
+  {cct}
+  {initialize {\tt tr\_xy}}
+\macrodef{tr\_xy}{tr_xy}{({\sl x, y})}
+  {cct}
+  {relative macro internal coordinates adjusted for {\tt L|R}}
+\macrodef{transformer}{transformer}{(\linespec,L|R,{\sl np},%
+[A|P][W|L][D1|D2|D12|D21],{\sl ns})}
+  {cct}
+  {2-winding transformer or choke with terminals P1, P2, TP, S1, S2, TS:
+    arg2: L = left, R = right,
+    arg3: np primary arcs,
+    arg5: ns secondary arcs,
+    arg4: A = air core, P = powder (dashed) core,
+    W = wide windings, L = looped windings,
+    D1: phase dots at P1 and S1 end; D2 at P2 and S2 end; D12 at P1 and S2 end;
+    D21 at P2 and S1 end 
+   \seesect{Composite:}}
+\macrodef{tstrip}{tstrip}{(R|L|U|D|{\sl degrees, nterms, chars})}
+  {cct}
+  {terminal strip, chars:
+   I=invisible terminals,
+   C=circle terminals (default),
+   D=dot terminals,
+   O=omitted separator lines,
+   {\tt wid=}value{\tt ;} total strip width,
+   {\tt ht=}value{\tt ;} strip height
+    \seesect{Composite:}}
+\macrodef{ttmotor}{ttmotor}{({\sl linespec, string, diameter, brushwid, brushht})}
+  {cct}
+  {motor with label\seesect{Twoterminal:}}
+\macrodef{twopi\_}{twopi_}{}
+  {gen}
+  {$2\pi$}
+\macrodef{ujt}{ujt}{(\linespec,R,P,E)}
+  {cct}
+  {unijunction transistor, right, P-channel, envelope
+    \seesect{Semiconductors:}}
+\macrodef{unit3D}{unit3D}{(x,y,z)}
+  {3D}
+  {unit triple in the direction of triple x,y,z}
+\macrodef{up\_\_}{up__}{}
+  {gen}
+  {up with respect to current direction}
+\macrodef{up\_}{up_}{}
+  {gen}
+  {set current direction up \seesect{Placing:}}
+\macrodef{variable}{variable}{(`{\sl element}',
+  {\tt [A|P|L|[u]N][C|S]},{\sl angle},{\sl length})}
+  {cct}
+  {overlaid arrow or line to indicate variable 2-terminal element:
+    {\tt A}=arrow, {\tt P}=preset,
+    {\tt L}=linear, {\tt N}=nonlinear, {\tt C}=continuous, {\tt S}=setpwise
+   \seesect{Twoterminal:}}
+\macrodef{Vcoords\_}{Vcoords_}{({\sl position})}
+  {gen}
+  {The $x, y$ coordinate pair of the position}
+\macrodef{Vdiff\_}{Vdiff_}{({\sl position},{\sl position})}
+  {gen}
+  {{\tt Vdiff\_(A,B)} evaluates to {\tt A-(B)} with dpic, {\tt A-(B.x,B.y)}
+   with gpic}
+\macrodef{vec\_}{vec_}{({\sl x},{\sl y})}
+  {gen}
+  {position rotated with respect to current direction}
+\macrodef{View3D}{View3D}{}
+  {3D}
+  {The view vector (triple) defined by {\tt setview({\sl azim, elev})}. The
+   {\tt project}
+   macro projects onto the plane perpendicular to this vector}
+\macrodef{vlength}{vlength}{({\sl x},{\sl y})}
+  {gen}
+  {vector length $\sqrt{x^2+y^2}$}
+\macrodef{vperp}{vperp}{({\sl linear object})}
+  {gen}
+  {unit-vector pair CCW-perpendicular to linear object}
+\macrodef{Vperp}{Vperp}{({\sl position name}, {\sl position name})}
+  {gen}
+  {unit-vector pair CCW-perpendicular to line joining two named positions}
+\macrodef{vrot\_}{vrot_}{({\sl x},{\sl y},{\sl xcosine},{\sl ycosine})}
+  {gen}
+  {rotation operator}
+\macrodef{vscal\_}{vscal_}{({\sl number},{\sl x},{\sl y})}
+  {gen}
+  {vector scale operator}
+\macrodef{Vsprod\_}{Vsprod_}{({\sl position}, {\sl expression})}
+  {gen}
+  {The vector in arg 1 multiplied by the scalar in arg 2}
+\macrodef{Vsum\_}{Vsum_}{({\sl position},{\sl position})}
+  {gen}
+  {{\tt Vsum\_(A,B)} evaluates to {\tt A+B} with dpic, {\tt A+(B.x,B.y)}
+   with gpic}
+\macrodef{w\_}{w_}{}
+  {gen}
+  {.w with respect to current direction}
+\macrodef{while\_}{while_}{(`{\sl test}',`{\sl actions}')}
+  {gen}
+  {Integer m4 while loop}
+\macrodef{wid\_}{wid_}{}
+  {gen}
+  {width with respect to current direction}
+\macrodef{winding}{winding}{(L|R, {\sl diam, pitch, turns, core wid,
+   core color})}
+  {cct}
+  {core winding drawn in the current direction; {\tt R}=right-handed
+   \seesect{Composite:}}
+\macrodef{XOR\_gate}{XOR_gate}{({\sl n},N)}
+  {log}
+  {`xor' gate, 2 or {\sl n\/} inputs; N=negated input.
+   Otherwise, arg1 can be a sequence of letters {\tt P|N}
+   to define normal or negated inputs.
+    \seesect{Logicgates:}}
+\macrodef{XOR\_off}{XOR_off}{}
+  {log}
+  {XOR and NXOR offset of input face}
+\macrodef{xtal}{xtal}{(\linespec)}
+  {cct}
+  {quartz crystal\seesect{Twoterminal:}}
+\macrodef{xtract}{xtract}{({\sl string, substr1, substr2, $\ldots$})}
+  {gen}
+  {returns substrings if present}
+%  \end{tabbing}
