@@ -1,0 +1,58 @@
+\documentclass[
+               dvips,               %We want to use LaTeX via dvips because of PSTricks
+               10pt                 %Default fontsize for the M4 Circuit Macros picture
+              ]{article}
+
+\usepackage[cmex10]{amsmath}        %To ensure only type 1 fonts will utilized at all point sizes
+\usepackage{amssymb}        	      %Additional AMS math symbols
+\usepackage[english]{babel}         %The language definition macros for the English language as well as for the American and Australian version of this language
+\usepackage[a0paper]{geometry}      %To ensure the LaTeX page is big enough
+\usepackage{hyperref}               %Define the properties field of the PDF output file, see \hypersetup later
+\usepackage[utf8]{inputenc}         %For UTF8 input encoding
+\usepackage[T1]{fontenc}            %For T1 Font encoding
+% \usepackage[slantedGreek]{mathpazo} %The Pazo Math fonts are a family of PostScript fonts suitable for typesetting mathematics in combination with the Palatino family of text fonts. The Pazo Math family is made up of five fonts provided in Adobe Type 1 format (PazoMath, PazoMath-Italic, PazoMath-Bold, PazoMath-BoldItalic, and PazoMathBlackboardBold).
+\usepackage{helvet}                 %For use with Beamer
+\usepackage{sansserifmath}          %To emulate Beamer sans-serif math font
+\usepackage{numprint}               %For ISO number representaion, e.g. 123 456,789 123 as used in Europe
+\usepackage{pstricks,pst-fill}      %For use with M4 Circuit_Macros's dpic -p option (i.e. PSTricks)
+\usepackage{steinmetz}              %For use with phasor/space vector notation
+\usepackage{xcolor}                 %For easy custum colour definitions
+
+\hypersetup{
+            pdftitle={M4 Circuit Macros Examples using m4cm.py},      %Title property field of the output PDF
+            pdfauthor={Peter Jan Randewijk (pjrandewijk@ieee.org)},    %Author property field of the output PDF
+            pdfsubject={M4 Circuit Macros Examples},                  %Subject property field of the output PDF
+            pdfkeywords={M4 Circuit Macros, Python}                   %Keyword property field of the output PDF
+           }
+         
+% Vector Algebra definitions (as used by Guru & Hiziroĝlu)%
+\newcommand{\del}{\boldsymbol{\nabla}}
+\newcommand{\dotp}{\boldsymbol{\cdot}}
+\newcommand{\crossp}{\boldsymbol{\times}}
+\newcommand{\vect}[1]{\vec{\mathbf{#1}}}
+\renewcommand{\div}{\del\dotp}
+\newcommand{\curl}{\del\crossp}
+\newcommand{\laplacian}{\del^2}
+
+% My custom LaTeX Macros
+\newcommand{\np}[2][]{\numprint[#1]{#2}}
+
+%Custom "math script font" using Utopia Regular - see The LaTeX Companion 2nd Edition, p. 509
+\DeclareMathAlphabet\mathscr{T1}{futs}{m}{it} 
+
+\definecolor{my_red}{RGB}{147,1,2}        %My custom red
+\definecolor{my_yellow}{RGB}{147,145,0}   %My custom yellow
+\definecolor{my_blue}{RGB}{2,39,154}      %My custom blue
+
+\renewcommand{\familydefault}{\sfdefault}     %To ensure all normal text in the picture will display correctly as Helvetica
+
+\pagestyle{empty}
+
+%------------------------------------------------------------------------------%
+\begin{document}
+%------------------------------------------------------------------------------%
+\hfill
+  %dpic_pstricks_output_here% -- This tag must be on its own line
+\hfill
+%------------------------------------------------------------------------------%
+\end{document}
