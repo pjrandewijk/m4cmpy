@@ -97,7 +97,7 @@ parser.add_argument('-t', '--template',
 
 parser.add_argument('-v','--version',
                     action='version',
-                    version='%(prog)s '+str(__version__))                    
+                    version='Version: %(prog)s '+str(__version__))                    
 
 parser.add_argument('m4cmFile',
                     nargs='*',
