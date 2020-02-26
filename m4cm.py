@@ -331,7 +331,8 @@ restore\n''')
     
     if not args.SUPER_QUIET:
       print('Done!\n')
+    
+    os.chdir(cwd)
 
   else:
-    print(filename+'.m4 was not found...?')
-  os.chdir(cwd)
+    print(filename+m4cmFileExt+' was not found...?')
