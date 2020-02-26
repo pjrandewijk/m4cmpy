@@ -4,6 +4,7 @@
 import os
 import re
 import sys
+import glob
 import subprocess
 import argparse
 
@@ -122,6 +123,8 @@ if re.search(r'%dpic_pstricks_output_here%',open(args.template, encoding='utf-8'
   
 #------------------------------------------------------------------------------#
 m4cmFileNameList=[]
+if re.search(r'\*',args.m4cmFile[0]) or re.search(r'\?',args.m4cmFile[0]):
+  args.m4cmFile=glob.glob(args.m4cmFile[0])
 for each_m4cmFileName in args.m4cmFile:
   try:
     (m4cmFileName, m4cmFileExt) = os.path.splitext(each_m4cmFileName)
