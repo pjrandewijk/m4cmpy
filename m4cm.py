@@ -330,7 +330,7 @@ restore\n''')
       os.remove(filename+'.eps')
     
     if not args.SUPER_QUIET:
-      print('Done!\n')
+      print('Done!')
     
     os.chdir(cwd)
 
