@@ -1,6 +1,6 @@
 .PS
 
-include(pstricks.m4)
+include(pgf.m4)
 
 scale=25.4
 
