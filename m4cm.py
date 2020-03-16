@@ -8,12 +8,12 @@ import glob
 import subprocess
 import argparse
 
-__version__ = 3.1
+__version__ = 3.2
 
 #------------------------------------------------------------------------------#
 parser = argparse.ArgumentParser(prog='M4CM',
-                                 description='Instead of "M4CM_FILE", it is also possible to use "*.m4cm" to compile all the ".m4cm" files in the current folder',
-                                 epilog='In order to create standalone PDF/JPG/PNG figures for M4 Circuit Macros')
+                                 description='M4CM is used to create standalone PDF/JPG/PNG figures for M4 Circuit Macros.',
+                                 epilog='Instead of "M4CM_FILE", it is also possible to use "*.m4cm" to compile all the ".m4cm" files in the current folder.')
 #------------------------------------------------------------------------------#
 
 #------------------------------------------------------------------------------#
@@ -46,7 +46,7 @@ parser.add_argument('-g', '--ghostscript',
                     action='store_true',
                     dest='GS',
                     default=False,
-                    help='use GhostScript to convert to PNG format')
+                    help='use GhostScript to convert to PNG/JPG format')
 parser.add_argument('-j', '--jpg',
                     action='store_true',
                     dest='JPG',
@@ -293,12 +293,12 @@ restore\n''')
         else:
           ps_exe = 'gs'
         if args.QUIET or args.SUPER_QUIET:
-          pngwrite_cmd='%s -dQUIET -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -sDEVICE=pngalpha -r600 -sOutputFile=%s.png %s.eps' % (ps_exe,filename,filename)
+          pngwrite_cmd='%s -dQUIET -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=pngalpha -r%d -sOutputFile=%s.png %s.eps' % (ps_exe, args.resolution, filename, filename)
         else:
-          pngwrite_cmd='%s -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -sDEVICE=pngalpha -r600 -sOutputFile=%s.png %s.eps' % (ps_exe,filename,filename)
+          pngwrite_cmd='%s -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=pngalpha -r%d -sOutputFile=%s.png %s.eps' % (ps_exe, args.resolution, filename, filename)
       else:
         #Using ImageMagick's convert instead of Ghostsript
-        pngwrite_cmd='convert -density %d %s.eps %s.png' % (args.resolution,filename,filename)
+        pngwrite_cmd='magick convert -density %d %s.eps %s.png' % (args.resolution, filename, filename)
 
       pngwrite_err=os.system(pngwrite_cmd)
       if pngwrite_err:
@@ -310,8 +310,21 @@ restore\n''')
     ###########################################################################
     if args.JPG:
       if not args.SUPER_QUIET: print('eps -> jpg')
-      #Using ImageMagick's convert instead of Ghostsript
-      jpgwrite_cmd='convert -density %d %s.eps %s.jpg' % (args.resolution,filename,filename)
+      if args.GS:
+        #Using Ghostsript
+        #Checking for platform
+        if sys.platform == 'win32':
+          ps_exe =  'gswin64c'
+        else:
+          ps_exe = 'gs'
+        if args.QUIET or args.SUPER_QUIET:
+          jpgwrite_cmd='%s -dQUIET -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=jpeg -r%d -dJPEGQ=75 -sOutputFile=%s.jpg %s.eps' % (ps_exe, args.resolution, filename, filename)
+        else:
+          jpgwrite_cmd='%s -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=jpeg -r%d -dJPEGQ=75 -sOutputFile=%s.jpg %s.eps' % (ps_exe, args.resolution, filename, filename)
+      else:
+        #Using ImageMagick's convert instead of Ghostsript
+        jpgwrite_cmd='magick convert -density %d %s.eps %s.jpg' % (args.resolution,filename,filename)
+      
       jpgwrite_err=os.system(jpgwrite_cmd)
       if jpgwrite_err:
         print('Error executing: '+jpgwrite_cmd)
