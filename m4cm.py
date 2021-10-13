@@ -8,7 +8,7 @@ import glob
 import subprocess
 import argparse
 
-__version__ = 3.2
+__version__ = 3.3
 
 #------------------------------------------------------------------------------#
 parser = argparse.ArgumentParser(prog='M4CM',
@@ -233,7 +233,7 @@ for filename in m4cmFileNameList:
     #First step: Obtain the Bounding Box information using Ghostscript
     if not args.SUPER_QUIET: print('ps -> eps')
     gs_exe='gswin64c' if sys.platform=='win32' else 'gs' 
-    gs_cmd = '%s -dBATCH -dNOPAUSE -sDEVICE=bbox "%s"' %  (gs_exe, filename+'.ps')
+    gs_cmd = '%s -dBATCH -dNOPAUSE -dALLOWPSTRANSPARENCY -sDEVICE=bbox "%s"' %  (gs_exe, filename+'.ps')
     gs_subprocess=subprocess.Popen(gs_cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True,encoding='utf-8')
     gs_out, gs_err = gs_subprocess.communicate() #'gs_err' contains the actual Bounding Box information and not the 'gs_out'
     if not args.QUIET: print(gs_out)
