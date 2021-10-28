@@ -198,7 +198,7 @@ for filename in m4cmFileNameList:
       else:
         print('\n')
       sys.exit(1)
-
+      
     #Delete all the LaTeX files
     if os.path.exists(filename+'.aux'):
       os.remove(filename+'.aux')
@@ -293,9 +293,9 @@ restore\n''')
         else:
           ps_exe = 'gs'
         if args.QUIET or args.SUPER_QUIET:
-          pngwrite_cmd='%s -dQUIET -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=pngalpha -r%d -sOutputFile=%s.png %s.eps' % (ps_exe, args.resolution, filename, filename)
+          pngwrite_cmd='%s -dQUIET -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dALLOWPSTRANSPARENCY -dGraphicsAlphaBits=4 -sDEVICE=pngalpha -r%d -sOutputFile=%s.png %s.eps' % (ps_exe, args.resolution, filename, filename)
         else:
-          pngwrite_cmd='%s -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=pngalpha -r%d -sOutputFile=%s.png %s.eps' % (ps_exe, args.resolution, filename, filename)
+          pngwrite_cmd='%s -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dALLOWPSTRANSPARENCY -dGraphicsAlphaBits=4 -sDEVICE=pngalpha -r%d -sOutputFile=%s.png %s.eps' % (ps_exe, args.resolution, filename, filename)
       else:
         #Using ImageMagick's convert instead of Ghostsript
         pngwrite_cmd='magick convert -density %d %s.eps %s.png' % (args.resolution, filename, filename)
@@ -318,9 +318,9 @@ restore\n''')
         else:
           ps_exe = 'gs'
         if args.QUIET or args.SUPER_QUIET:
-          jpgwrite_cmd='%s -dQUIET -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=jpeg -r%d -dJPEGQ=75 -sOutputFile=%s.jpg %s.eps' % (ps_exe, args.resolution, filename, filename)
+          jpgwrite_cmd='%s -dQUIET -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dALLOWPSTRANSPARENCY -dGraphicsAlphaBits=4 -sDEVICE=jpeg -r%d -dJPEGQ=75 -sOutputFile=%s.jpg %s.eps' % (ps_exe, args.resolution, filename, filename)
         else:
-          jpgwrite_cmd='%s -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dGraphicsAlphaBits=4 -sDEVICE=jpeg -r%d -dJPEGQ=75 -sOutputFile=%s.jpg %s.eps' % (ps_exe, args.resolution, filename, filename)
+          jpgwrite_cmd='%s -dBATCH -dNOPAUSE -dSAFER -dEPSCrop -dALLOWPSTRANSPARENCY -dGraphicsAlphaBits=4 -sDEVICE=jpeg -r%d -dJPEGQ=75 -sOutputFile=%s.jpg %s.eps' % (ps_exe, args.resolution, filename, filename)
       else:
         #Using ImageMagick's convert instead of Ghostsript
         jpgwrite_cmd='magick convert -density %d %s.eps %s.jpg' % (args.resolution,filename,filename)
