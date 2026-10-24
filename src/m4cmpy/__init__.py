@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import http.client
 import io
 import os
 import re
@@ -31,6 +32,8 @@ __version__ = "4.0.0"
 MARKER = "%dpic_pstricks_output_here%"
 DEFAULT_TEMPLATE = "default.ltx"
 CTAN_URL = "https://mirrors.ctan.org/graphics/circuit_macros.zip"
+# the redirector picks a mirror per request and some mirrors fail TLS checks: retry it, then use DANTE's ctan.net
+CTAN_URLS = (CTAN_URL, CTAN_URL, "https://ctan.net/graphics/circuit_macros.zip")
 
 
 # ------------------------------------------------------------------ helpers
@@ -100,16 +103,25 @@ def cm_version(folder: Path) -> str:
     return match.group(1) if match else "?"
 
 
-def get_circuit_macros(url: str = CTAN_URL) -> Path:
+def get_circuit_macros(urls: tuple[str, ...] = CTAN_URLS) -> Path:
     """Download Circuit Macros from CTAN into cache_dir() and return its folder."""
+    errors = []
+    for url in urls:
+        request = urllib.request.Request(url, headers={"User-Agent": f"m4cmpy/{__version__}"})
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                archive = zipfile.ZipFile(io.BytesIO(response.read()))
+            break
+        except (OSError, http.client.HTTPException, zipfile.BadZipFile) as error:
+            errors.append(f"{url}: {error}")
+    else:
+        raise RuntimeError("; ".join(errors))
     cache = cache_dir()
     cache.mkdir(parents=True, exist_ok=True)
     target = cache / "circuit_macros"
-    with urllib.request.urlopen(url, timeout=120) as response:
-        data = response.read()
     with tempfile.TemporaryDirectory(dir=cache) as tmp:
         # zipfile drops absolute paths and ".." from member names
-        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+        with archive:
             archive.extractall(tmp)
         lib = next(Path(tmp).rglob("libcct.m4"), None)
         if lib is None:

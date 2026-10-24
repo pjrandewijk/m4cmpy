@@ -1,6 +1,9 @@
+import io
 import os
 import tempfile
 import unittest
+import urllib.error
+import zipfile
 from pathlib import Path
 from unittest import mock
 
@@ -94,6 +97,19 @@ class CircuitMacrosSearchTests(unittest.TestCase):
     def test_m4path_takes_over(self):
         with mock.patch.dict(os.environ, {"M4PATH": "somewhere"}):
             self.assertEqual(default_include_dirs(), [])
+
+    def test_get_cm_tries_the_next_mirror_after_a_failure(self):
+        archive = io.BytesIO()
+        with zipfile.ZipFile(archive, "w") as z:
+            z.writestr("circuit_macros/libcct.m4", "")
+            z.writestr("circuit_macros/README", "Circuit_macros Version 11.1.3")
+        responses = [urllib.error.URLError("certificate verify failed"), io.BytesIO(archive.getvalue())]
+        with tempfile.TemporaryDirectory() as directory:
+            env = {"LOCALAPPDATA": directory, "XDG_CACHE_HOME": directory}
+            with mock.patch.dict(os.environ, env), mock.patch("urllib.request.urlopen", side_effect=responses):
+                folder = m4cmpy.get_circuit_macros(("https://bad.example/cm.zip", "https://good.example/cm.zip"))
+                self.assertTrue((folder / "libcct.m4").is_file())
+                self.assertEqual(m4cmpy.cm_version(folder), "11.1.3")
 
 
 def _converter(*options):
