@@ -64,8 +64,8 @@ without one, a built-in template is used. Templates must contain a line with
 | [tests](tests) | unit, toolchain and end-to-end tests: `python -m unittest discover -s tests -v` |
 | [My Examples](My%20Examples) | example `.m4cm` files and template |
 | [My LaTeX Style Files](My%20LaTeX%20Style%20Files) | `sansserifmath.sty`, used by the example template |
-| [Syntax Highlighting](Syntax%20Highlighting) | Notepad++, Kate and Programmer's Notepad definitions |
-| [Additional Scripts](Additional%20Scripts) | animation and syntax-definition helpers |
+| [Syntax Highlighting](Syntax%20Highlighting) | VS Code (`.vsix`), Notepad++, Kate and Programmer's Notepad definitions |
+| [Additional Scripts](Additional%20Scripts) | animation helper, and `m4cm_defines.py`, which regenerates the syntax highlighting from a Circuit Macros release |
 | [legacy/m4cm.py](legacy/m4cm.py) | the classic script (version 3.3), which still uses m4, dpic and ImageMagick |
 
 CI runs the tests on Windows, macOS and Linux against the latest pym4 and
