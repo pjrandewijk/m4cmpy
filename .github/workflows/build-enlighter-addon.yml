@@ -1,0 +1,51 @@
+name: Build Enlighter add-on
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Syntax Highlighting/EnlighterJS/**"
+      - ".github/workflows/build-enlighter-addon.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: EnlighterJS/EnlighterJS
+          ref: 550ea714870a7c29cbad0ddeddf6614dfa4573b9
+          path: enlighterjs
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+      - name: Add the m4cm language module
+        run: |
+          cp "Syntax Highlighting/EnlighterJS/m4cm.js" enlighterjs/src/lang/m4cm.js
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path("enlighterjs/src/lang/index.js")
+          source = index.read_text(encoding="utf-8")
+          entry = "export {m4cm} from './m4cm';"
+          if entry not in source:
+              index.write_text(source.rstrip() + "\n" + entry + "\n", encoding="utf-8")
+          PY
+      - name: Build EnlighterJS 3.6.0 with the m4cm language
+        working-directory: enlighterjs
+        run: |
+          npm install --global yarn@1.22.22
+          yarn install --frozen-lockfile
+          ./node_modules/.bin/gulp library
+      - name: Package the WordPress plugin
+        run: |
+          mkdir -p "Syntax Highlighting/EnlighterJS/wordpress-plugin/m4cm-enlighter/assets"
+          cp enlighterjs/dist/enlighterjs.min.js "Syntax Highlighting/EnlighterJS/wordpress-plugin/m4cm-enlighter/assets/"
+          cp enlighterjs/LICENSE.txt "Syntax Highlighting/EnlighterJS/wordpress-plugin/m4cm-enlighter/ENLIGHTERJS-LICENSE.txt"
+          cd "Syntax Highlighting/EnlighterJS/wordpress-plugin"
+          zip -r "$GITHUB_WORKSPACE/m4cm-enlighter.zip" m4cm-enlighter
+      - uses: actions/upload-artifact@v7
+        with:
+          name: m4cm-enlighter-wordpress-plugin
+          path: m4cm-enlighter.zip
