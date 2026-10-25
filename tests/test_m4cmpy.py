@@ -26,13 +26,15 @@ Zl: ebox(down_ to (Here.x,O.y)); llabel(,\\mathbf{Z}_l,)
 
 
 class WrapTemplateTests(unittest.TestCase):
-    def test_marker_line_is_replaced_by_the_picture(self):
-        template = "\\begin{document}\n  %dpic_pstricks_output_here% comment\n\\end{document}\n"
-        result = wrap_template(template, "\\psline(0,0)(1,0)\n")
-        self.assertEqual(result, "\\begin{document}\n\\psline(0,0)(1,0)\n\\end{document}\n")
+    def test_current_and_legacy_marker_lines_are_replaced_by_the_picture(self):
+        for marker in m4cmpy.MARKERS:
+            with self.subTest(marker=marker):
+                template = f"\\begin{{document}}\n  {marker} comment\n\\end{{document}}\n"
+                result = wrap_template(template, "\\psline(0,0)(1,0)\n")
+                self.assertEqual(result, "\\begin{document}\n\\psline(0,0)(1,0)\n\\end{document}\n")
 
     def test_missing_marker_is_reported(self):
-        with self.assertRaisesRegex(ValueError, "dpic_pstricks_output_here"):
+        with self.assertRaisesRegex(ValueError, "pppic_output_here.*dpic_pstricks_output_here"):
             wrap_template("\\begin{document}\\end{document}\n", "x")
 
 

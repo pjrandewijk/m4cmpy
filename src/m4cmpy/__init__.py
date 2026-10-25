@@ -29,7 +29,9 @@ from pppic import PicCompiler, PicError
 from pym4 import M4Error, M4Lite, read_source
 
 __version__ = "4.0.0"
-MARKER = "%dpic_pstricks_output_here%"
+MARKER = "%pppic_output_here%"
+LEGACY_MARKER = "%dpic_pstricks_output_here%"
+MARKERS = (MARKER, LEGACY_MARKER)
 DEFAULT_TEMPLATE = "default.ltx"
 CTAN_URL = "https://mirrors.ctan.org/graphics/circuit_macros.zip"
 # the redirector picks a mirror per request and some mirrors fail TLS checks: retry it, then use DANTE's ctan.net
@@ -40,12 +42,12 @@ CTAN_URLS = (CTAN_URL, CTAN_URL, "https://ctan.net/graphics/circuit_macros.zip")
 
 
 def wrap_template(template: str, pstricks: str) -> str:
-    """Replace the line holding the marker by the PSTricks picture, as m4cm.py does."""
+    """Replace a recognized marker line with the generated PSTricks picture."""
     lines = template.splitlines(keepends=True)
     for i, line in enumerate(lines):
-        if MARKER in line:
+        if any(marker in line for marker in MARKERS):
             return "".join(lines[:i]) + pstricks.rstrip("\n") + "\n" + "".join(lines[i + 1:])
-    raise ValueError(f'the "{MARKER}" tag is missing from the LaTeX template')
+    raise ValueError("the template is missing a picture marker: " + " or ".join(MARKERS))
 
 
 def ps_to_eps(ps: str, bbox: tuple[int, int, int, int], hires: tuple[float, float, float, float],
