@@ -1,10 +1,10 @@
-# m4cmpy
+# m4cm.py
 
 [![CI](https://github.com/pjrandewijk/m4cmpy/actions/workflows/ci.yml/badge.svg)](https://github.com/pjrandewijk/m4cmpy/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/m4cmpy?label=PyPI)](https://pypi.org/project/m4cmpy/)
 
-M4 Circuit Macros Python automation script to create standalone PDF, PNG, JPG,
-SVG and EPS pictures with ease (see [m4cmpy.wordpress.com](https://m4cmpy.wordpress.com)).
+The M4 Circuit Macros Python automation script simplifies to process to create standalone EPS, PDF, PNG, JPG and
+SVG pictures in one go (see [peter.randewijk.dk](https://peter.randewijk.dk)).
 
 Version 4 needs **only Python and a TeX distribution** (MiKTeX or TeX Live):
 GNU m4, dpic and ImageMagick are no longer required.
