@@ -44,7 +44,7 @@ jobs:
       - name: Build the example with the built-in template
         run: |
           mkdir figures
-          cp "My Examples/ex0.m4cm" figures/
+          cp Examples/ex0.m4cm figures/
           cd figures
           m4cm -p -n -s ex0.m4cm
       - uses: actions/upload-artifact@v7
