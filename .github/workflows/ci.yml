@@ -35,7 +35,7 @@ jobs:
           python-version: "3.14"
       - run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-recommended \
+          sudo apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-recommended texlive-fonts-recommended \
             texlive-pstricks texlive-font-utils dvisvgm ghostscript
       - run: python -m pip install git+https://github.com/pjrandewijk/pym4 git+https://github.com/pjrandewijk/pppic
       - run: python -m pip install .
