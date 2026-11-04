@@ -54,7 +54,7 @@ m4cm -n -r 192 -o web ex0.m4cm # 192 dpi PNG in the folder "web"
 
 The LaTeX template is looked up in the current folder, then next to the input;
 without one, a built-in template is used. Templates must contain a line with
-`%dpic_pstricks_output_here%`; see [My Examples/default.ltx](My%20Examples/default.ltx).
+`%dpic_pstricks_output_here%`; see [Examples/default.ltx](Examples/default.ltx).
 
 ## Repository
 
@@ -62,8 +62,8 @@ without one, a built-in template is used. Templates must contain a line with
 |---|---|
 | [src/m4cmpy](src/m4cmpy) | the `m4cm` command |
 | [tests](tests) | unit, toolchain and end-to-end tests: `python -m unittest discover -s tests -v` |
-| [My Examples](My%20Examples) | example `.m4cm` files and template |
-| [My LaTeX Style Files](My%20LaTeX%20Style%20Files) | `sansserifmath.sty`, used by the example template |
+| [Examples](Examples) | example `.m4cm` files and template |
+| [Sansserif Math LaTeX Style Files](Sansserif%20Math%20LaTeX%20Style%20Files) | `sansserifmath.sty`, used by the example template |
 | [Syntax Highlighting](Syntax%20Highlighting) | VS Code (`.vsix`), Notepad++, Kate and Programmer's Notepad definitions |
 | [Additional Scripts](Additional%20Scripts) | animation helper, and `m4cm_defines.py`, which regenerates the syntax highlighting from a Circuit Macros release |
 | [legacy/m4cm.py](legacy/m4cm.py) | the classic script (version 3.3), which still uses m4, dpic and ImageMagick |
