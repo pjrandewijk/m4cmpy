@@ -28,7 +28,7 @@ from pathlib import Path
 from pppic import PicCompiler, PicError
 from pym4 import M4Error, M4Lite, read_source
 
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 MARKER = "%pppic_output_here%"
 LEGACY_MARKER = "%dpic_pstricks_output_here%"
 MARKERS = (MARKER, LEGACY_MARKER)
