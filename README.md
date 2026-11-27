@@ -56,6 +56,36 @@ The LaTeX template is looked up in the current folder, then next to the input;
 without one, a built-in template is used. Templates must contain a line with
 `%dpic_pstricks_output_here%`; see [Examples/default.ltx](Examples/default.ltx).
 
+## Scripting in Python
+
+`m4cmpy.cm` writes Circuit Macros source from Python and renders it with `m4cm`:
+
+```python
+import m4cmpy.cm as cm
+
+with cm.Drawing() as d:                         # lengths in mm
+    O = d.point("O", (0, 0))
+    d.source("sinusoid", up=12.5, start=O, label=r"\mathbf{V}_s")
+    d.inductor(right=25, label="jX_s")
+    d.ebox(down_to=O, label=r"\mathbf{Z}_l")    # down to the level of O
+    d.line(end=O)
+    d.ground()
+d.render("ex0.m4cm", pdf=True, png=True)        # also writes ex0.m4cm
+```
+
+* Methods are named after the Circuit Macros macros (`source`, `resistor`, `opamp`,
+  `busbar`, `sl_transformer`, ...) and take their arguments; readable aliases such as
+  `"voltage"` stand for the macro codes (`V`). `d.element("anymacro", ...)` reaches the rest.
+* Place an element by direction (`up=12.5`, `right=True`, `dir=30`), by coordinates or
+  terminals (`start=(0, 0)`, `end=r1.end`), or by direction to a level (`down_to=O`).
+  Without placement it continues from the previous element, as in Circuit Macros.
+* Terminals are positions: `r1.start`, `r1.end`, `r1.center`, `amp.Out`, `bus.P2`.
+  `d.wire(a, b, route="-|")` joins two terminals with orthogonal segments.
+* The module-level functions (`cm.source(...)`, `cm.render(...)`) work on a current
+  drawing, as in matplotlib's pyplot.
+
+See [Examples/facade_example.py](Examples/facade_example.py).
+
 ## Repository
 
 | Folder | Contents |
